@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#DFBCC9</color>
+
+    <color name="dark">#000</color>
+
+    <color name="selectedTextBackground">#8BC34A</color>
+    <color name="selectedText">#FFFFFF</color>
+
+    <color name="unSelectedTextBackground">#6BAF919A</color>
+    <color name="unSelectedText">#000000</color>
+
+    <color name="list_item_resource_text_color">#FFFFFF</color>
+</resources>
