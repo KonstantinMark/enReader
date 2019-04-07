@@ -2,7 +2,7 @@ package com.bignerdranch.android.testpdfreader.model;
 
 import com.bignerdranch.android.testpdfreader.control.content.PdfFullViewFragment;
 import com.bignerdranch.android.testpdfreader.control.content.PdfJsViewFragment;
-import com.bignerdranch.android.testpdfreader.control.content.PdfMobileViewFragment;
+import com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.PdfMobileViewFragment;
 import com.bignerdranch.android.testpdfreader.control.content.TextSelectorFragment;
 
 public class ViewFragmentFactory {

@@ -98,7 +98,8 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         public void onClick(View v) {
             Intent i = BookViewerActivity.newIntent(
                     getContext(),
-                    new ResourceDescriptor(mUri.toString(), ResourceDescriptor.PDF_MOBILE_TYPE)
+                    new ResourceDescriptor(mUri.toString(),
+                            ResourceDescriptor.PDF_MOBILE_TYPE)
             );
             startActivity(i);
         }

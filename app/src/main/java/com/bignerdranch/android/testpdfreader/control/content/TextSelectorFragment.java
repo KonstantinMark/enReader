@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.PdfMobileViewFragment;
+
 public abstract class TextSelectorFragment extends Fragment {
     private ITextSelectedReceiver mITextSelectedReceiver;
     private static final String ARG_URL = "uri";
