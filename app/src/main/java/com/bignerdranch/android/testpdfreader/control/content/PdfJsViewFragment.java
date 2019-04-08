@@ -2,7 +2,6 @@ package com.bignerdranch.android.testpdfreader.control.content;
 
 import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -21,7 +19,7 @@ import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfJsViewBindi
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class PdfJsViewFragment extends TextSelectorFragment {
+public class PdfJsViewFragment extends ResourceReceiverFragment {
     private static final String TAG = "PdfJsViewFragment";
     private static final String JS_PDF_PATH =
             "file:///android_asset/pdfjs/web/viewer.html?file=";
@@ -45,7 +43,7 @@ public class PdfJsViewFragment extends TextSelectorFragment {
         view.getSettings().setAllowUniversalAccessFromFileURLs(true);
         view.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-        view.addJavascriptInterface(new WordClickListener(), "clickListener");
+        //view.addJavascriptInterface(new WordClickListener(), "clickListener");
 
         view.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -68,6 +66,7 @@ public class PdfJsViewFragment extends TextSelectorFragment {
         };
     }
 
+    /*
     class WordClickListener {
         @JavascriptInterface
         public void onClick(String text){
@@ -79,6 +78,7 @@ public class PdfJsViewFragment extends TextSelectorFragment {
             notifyTextSelected(text);
         }
     }
+    */
 
 
 

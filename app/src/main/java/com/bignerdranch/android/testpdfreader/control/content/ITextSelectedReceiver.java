@@ -4,4 +4,6 @@ public interface ITextSelectedReceiver {
 
     void textSelected(String text);
 
+    void paragraphSelected(String paragraph, TranslationReceiver receiver);
+
 }

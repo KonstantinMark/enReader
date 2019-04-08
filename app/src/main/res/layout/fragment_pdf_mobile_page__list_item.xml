@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItem" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/fragment_pdf_mobile_page__list_item__constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false">
+
+        <TextView
+            android:id="@+id/fragment_pdf_mobile_page__list_item__content_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:accessibilityLiveRegion="assertive"
+            android:text="@{`    ` + viewModel.content}"
+            android:textColor="@android:color/black"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_pdf_mobile_page__list_item__linearLayout7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            tools:text="asdsad asdddd dsfsdfd sf sd dsf sf sdfsd dsf sd sdfdddddsssssssfsdf ds sdfsdfsdf sdfdf " />
+
+        <TextView
+            android:id="@+id/fragment_pdf_mobile_page__list_item__translation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:accessibilityLiveRegion="assertive"
+            android:text="@{`    ` + viewModel.translation}"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:visibility="@{viewModel.visibilityTranslation}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_pdf_mobile_page__list_item__content_text"
+            tools:text="asdsadasdddd dsfsdfdsf sd dsf sf sdfsd dsf sd sdfdddddsssssssfsdf ds sdfsdfsdf sdfdf " />
+
+        <View
+            android:id="@+id/fragment_pdf_mobile_page__list_item__view"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_pdf_mobile_page__list_item__translation" />
+
+        <LinearLayout
+            android:id="@+id/fragment_pdf_mobile_page__list_item__linearLayout7"
+            android:layout_width="25dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_pdf_mobile_page__list_item__view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/fragment_pdf_mobile_page__list_item__translate_paragraph_btn"
+                android:layout_width="25dp"
+                android:layout_height="22dp"
+                android:visibility="@{viewModel.visibilityTranslateBtn}"
+                app:srcCompat="@android:drawable/ic_menu_view" />
+
+            <ProgressBar
+                android:id="@+id/fragment_pdf_mobile_page__list_item__load_translate_animation"
+                android:layout_width="25dp"
+                android:layout_height="22dp"
+                android:indeterminateOnly="true"
+                android:visibility="@{ viewModel.visibilityTranslateAnimation}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone" />
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

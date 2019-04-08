@@ -2,9 +2,7 @@ package com.bignerdranch.android.testpdfreader.view.item;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.util.Log;
-
-import com.android.databinding.library.baseAdapters.BR;
+import android.view.View;
 
 public class PdfMobileViewItem extends BaseObservable {
     private String TAG = "PdfMobileViewItem";
@@ -18,6 +16,11 @@ public class PdfMobileViewItem extends BaseObservable {
     @Bindable
     public String getContent(){
         return mContent;
+    }
+
+    @Bindable
+    public int getVisibilityLoadAnimation() {
+        return getContent() != null ? View.GONE : View.VISIBLE;
     }
 
 }

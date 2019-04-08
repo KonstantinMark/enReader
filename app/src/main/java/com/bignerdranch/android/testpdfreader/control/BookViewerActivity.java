@@ -10,9 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.bignerdranch.android.testpdfreader.R;
-import com.bignerdranch.android.testpdfreader.model.ViewFragmentFactory;
-import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
 import com.bignerdranch.android.testpdfreader.control.content.ITextSelectedReceiver;
+import com.bignerdranch.android.testpdfreader.control.content.TranslationReceiver;
+import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
+import com.bignerdranch.android.testpdfreader.model.ViewFragmentFactory;
 
 public class BookViewerActivity extends AppCompatActivity implements ITextSelectedReceiver {
     private static final String EXTRA_RESOURCE_DESCRIPTOR =
@@ -47,5 +48,11 @@ public class BookViewerActivity extends AppCompatActivity implements ITextSelect
     @Override
     public void textSelected(String text) {
         Toast.makeText(this, "textSelected: " + text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void paragraphSelected(String paragraph, TranslationReceiver receiver) {
+        Toast.makeText(this, "paragraphSelected: " + paragraph, Toast.LENGTH_SHORT).show();
+        receiver.receiveTranslation("response ...");
     }
 }

@@ -1,5 +1,6 @@
 package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 
+import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,28 +10,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
-import com.bignerdranch.android.testpdfreader.control.content.TextSelectorFragment;
+import com.bignerdranch.android.testpdfreader.control.content.ResourceReceiverFragment;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfMobileViewBinding;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 
 import java.io.IOException;
-import java.util.List;
 
-public class PdfMobileViewFragment extends TextSelectorFragment {
+public class PdfMobileViewFragment extends ResourceReceiverFragment {
 
     private static final String TAG = "PdfMobileViewFragment";
-    private List<String> mPages;
 
     private FragmentPdfMobileViewBinding mBinding;
-    private RecyclerView.Adapter mAdapter;
 
     @Nullable
     @Override
@@ -49,7 +46,6 @@ public class PdfMobileViewFragment extends TextSelectorFragment {
                     public Fragment getItem(int i) {
                         PageFragment fragment = PageFragment.newInstance();
                         loader.load(i, fragment);
-                        mBinding.fragmentPdfMobileViewPageNumber.setText(i + "/" + getCount());
                         return fragment;
                     }
 
@@ -58,6 +54,24 @@ public class PdfMobileViewFragment extends TextSelectorFragment {
                         return loader.getCount();
                     }
                 });
+
+        mBinding.fragmentPdfMobileViewViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+                mBinding.fragmentPdfMobileViewPageNumber.setText((i + 1) + "/" + loader.getCount());
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
         return mBinding.getRoot();
     }
@@ -98,8 +112,8 @@ public class PdfMobileViewFragment extends TextSelectorFragment {
 
         @Override
         public void onPageLoaded(PageFragment target, String content) {
-            Log.i(TAG, content);
-            target.setContent(content);
+            TextManager textManager = new TextManager(content);
+            target.setContent(textManager.getParagraphs());
         }
     }
 
