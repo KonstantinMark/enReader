@@ -15,4 +15,7 @@
     <color name="list_item_resource_text_color">#FFFFFF</color>
     <color name="bookViewBackground">#FFF</color>
     <color name="bookViewTextColor">#000</color>
+
+    <color name="listContentBackground">#ffffff</color>
+    <color name="listBookElementBackground">#ffffff</color>
 </resources>

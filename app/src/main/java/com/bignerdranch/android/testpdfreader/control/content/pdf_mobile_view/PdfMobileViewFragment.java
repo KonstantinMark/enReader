@@ -1,6 +1,7 @@
 package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.control.content.ICloseTranslationFragmentListener;
 import com.bignerdranch.android.testpdfreader.control.content.ResourceReceiverFragment;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfMobileViewBinding;
+import com.bignerdranch.android.testpdfreader.view.item.FragmentPdfMobileViewViewModal;
 import com.itextpdf.text.pdf.PdfReader;
 
 import java.io.IOException;
@@ -26,8 +29,15 @@ import java.io.IOException;
 public class PdfMobileViewFragment extends ResourceReceiverFragment {
 
     private static final String TAG = "PdfMobileViewFragment";
+    private ICloseTranslationFragmentListener mUserNavigationActionListener;
 
     private FragmentPdfMobileViewBinding mBinding;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mUserNavigationActionListener = (ICloseTranslationFragmentListener) context;
+    }
 
     @Nullable
     @Override
@@ -38,6 +48,9 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
 
         Uri uri = getResourceUri();
         final PageFragmentManager loader = new PageFragmentManager(uri);
+        mBinding.setViewModel(new FragmentPdfMobileViewViewModal());
+        mBinding.getViewModel().setFullPageCount(loader.getCount());
+        mBinding.getViewModel().setCurrentPageNumber(1);
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         mBinding.fragmentPdfMobileViewViewPager.setAdapter(
@@ -59,7 +72,8 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-                mBinding.fragmentPdfMobileViewPageNumber.setText((i + 1) + "/" + loader.getCount());
+                mBinding.getViewModel().setCurrentPageNumber(i + 1);
+                notifyUserNavigationActionListener();
             }
 
             @Override
@@ -76,6 +90,18 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
         return mBinding.getRoot();
     }
 
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mUserNavigationActionListener = null;
+    }
+
+    private void notifyUserNavigationActionListener() {
+        if (mUserNavigationActionListener != null) {
+            mUserNavigationActionListener.onUserActionPerformed();
+        }
+    }
 
     private class PageFragmentManager implements PagesLoader.PageLoadedListener<PageFragment>{
         private Uri mUri;

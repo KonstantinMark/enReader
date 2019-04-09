@@ -1,31 +1,91 @@
 package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TextManager {
     private String mText;
+    private static String PARAGRAPH_SPACE = "        ";
+    private static int PARAGRAPH_MAX_CHAR_COUNT = 400;
 
     public TextManager(String text){
         mText = text;
     }
 
+    static boolean isLowerCaseLetter(char c) {
+        return (c >= 'a' && c <= 'z');
+    }
+
+    static boolean isLetter(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '’';
+    }
+
     public String getNormalisedText(){
-        mText = mText.replaceAll(" {2}", " ");
-        mText = mText.replaceAll("[^.!?] \n", " ");
-        mText = mText.replaceAll("[^.!?]\n", " ");
-        mText = mText.replaceAll("\n", "\n        ");
-        return mText;
+        String[] tmp = mText.split("\n");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String s : tmp) {
+            if (s.length() > 0) {
+                if (isLowerCaseLetter(s.charAt(0))) {
+                    stringBuilder.append(' ');
+                } else {
+                    stringBuilder.append('\n');
+                }
+                stringBuilder.append(s);
+            }
+        }
+
+
+        if (stringBuilder.length() > 0 && stringBuilder.charAt(0) == '\n')
+            stringBuilder.deleteCharAt(0);
+
+        return stringBuilder.toString().replaceAll(";", ";\n");
     }
 
     public String getWordSelection(int startPosition) {
-        return "text";
+        String word = null;
+
+        int wordStartPosition = startPosition;
+        int wordEndPosition = startPosition;
+
+
+        if (startPosition >= mText.length()) {
+            return null;
+        }
+
+        try {
+            if (isLetter(mText.charAt(wordStartPosition))) {
+                while (isLetter(mText.charAt(wordStartPosition - 1))) {
+                    wordStartPosition--;
+                }
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+
+        do {
+            wordEndPosition++;
+        } while (mText.length() > wordEndPosition &&
+                isLetter(mText.charAt(wordEndPosition)));
+
+        if (wordStartPosition < wordEndPosition) {
+            word = mText.substring(wordStartPosition, wordEndPosition).replaceAll("\\s", "");
+
+            if (word.length() == 0) {
+                word = null;
+            }
+        }
+
+        return word;
     }
 
     public List<String> getParagraphs() {
         String text = getNormalisedText();
+        ArrayList<String> result = new ArrayList<>();
         String paragraphs[] = text.split("\n");
-        return new ArrayList<>(Arrays.asList(paragraphs));
+        for (String prg : paragraphs) {
+            if (prg.trim().length() > 0) result.add(prg);
+        }
+        return result;
     }
 }

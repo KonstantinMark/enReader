@@ -71,7 +71,7 @@ public class PageFragment extends TextSelectorFragment {
 
     public void setContent(List<String> content) {
         mViewModel.setContentReceived(true);
-        mContent = content;
+        mContent = content != null ? content : new ArrayList<String>();
         updateUI();
     }
 
@@ -82,6 +82,22 @@ public class PageFragment extends TextSelectorFragment {
             super(binding.getRoot());
             mBinding = binding;
             mBinding.fragmentPdfMobilePageListItemContentText.setOnClickListener(this);
+            mBinding.fragmentPdfMobilePageListItemContentText.setOnSelectionChangListener(new SelectionAdaptedTextView.OnSelectionChangListener() {
+                @Override
+                public void onSelectionChanged(int selStart, int selEnd) {
+                    selStart = mBinding.fragmentPdfMobilePageListItemContentText.getSelectionStart();
+                    selEnd = mBinding.fragmentPdfMobilePageListItemContentText.getSelectionEnd();
+                    if (selStart != selEnd) {
+                        notifyParagraphSelected(
+                                mBinding.fragmentPdfMobilePageListItemContentText
+                                        .getText().toString().substring(selStart, selEnd),
+                                PageFragmentHolder.this);
+                        mBinding.getViewModel().setTranslationLoadingAnimationVisibility(true);
+                    }
+                }
+            });
+
+
             mBinding.fragmentPdfMobilePageListItemTranslateParagraphBtn.setOnClickListener(
                     new View.OnClickListener() {
                         @Override

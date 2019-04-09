@@ -17,7 +17,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false">
 
-        <TextView
+        <com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.SelectionAdaptedTextView
             android:id="@+id/fragment_pdf_mobile_page__list_item__content_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

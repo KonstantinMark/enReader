@@ -5,11 +5,13 @@ import android.support.v4.app.Fragment;
 
 public abstract class TextSelectorFragment extends Fragment {
     private ITextSelectedReceiver mITextSelectedReceiver;
+    private ICloseTranslationFragmentListener mICloseTranslationFragmentListener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mITextSelectedReceiver = (ITextSelectedReceiver) context;
+        mICloseTranslationFragmentListener = (ICloseTranslationFragmentListener) context;
     }
 
     protected void notifyTextSelected(String text){
@@ -28,9 +30,15 @@ public abstract class TextSelectorFragment extends Fragment {
         }
     }
 
+    protected void notifyUserActionPerformed() {
+        if (mICloseTranslationFragmentListener != null)
+            mICloseTranslationFragmentListener.onUserActionPerformed();
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
         mITextSelectedReceiver = null;
+        mICloseTranslationFragmentListener = null;
     }
 }

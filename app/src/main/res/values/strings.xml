@@ -2,7 +2,7 @@
     <string name="app_name">EnReader0.1</string>
 
     <string name="book_already_added">Book already added</string>
-
+    <string name="word_not_found">Неудалось перевести слово</string>
 
 
 </resources>
