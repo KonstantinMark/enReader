@@ -9,12 +9,12 @@
           type="com.bignerdranch.android.testpdfreader.view.item.FragmentPdfMobileViewViewModal" />
    </data>
 
-   <android.support.constraint.ConstraintLayout
+   <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:background="@color/bookViewBackground">
 
-      <android.support.v4.view.ViewPager
+      <androidx.viewpager.widget.ViewPager
           android:id="@+id/fragment_pdf_mobile_view___view_pager"
           android:layout_width="match_parent"
           android:layout_height="0dp"
@@ -36,8 +36,17 @@
           android:text="@{viewModel.pageInformation}"
           tools:text="71/1080" />
 
+      <ProgressBar
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="@{viewModel.loadingProgressBarVisibility}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
-   </android.support.constraint.ConstraintLayout>
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

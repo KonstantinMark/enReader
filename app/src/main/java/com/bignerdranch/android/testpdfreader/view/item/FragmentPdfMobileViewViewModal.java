@@ -1,15 +1,17 @@
 package com.bignerdranch.android.testpdfreader.view.item;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import android.view.View;
+
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 public class FragmentPdfMobileViewViewModal extends BaseObservable {
-    private int mFullPageCount;
+    private Integer mFullPageCount;
     private int mCurrentPageNumber;
 
     @Bindable
     public int getFullPageCount() {
-        return mFullPageCount;
+        return mFullPageCount != null ? mFullPageCount : 0;
     }
 
     public void setFullPageCount(int fullPageCount) {
@@ -25,6 +27,11 @@ public class FragmentPdfMobileViewViewModal extends BaseObservable {
     public void setCurrentPageNumber(int currentPageNumber) {
         mCurrentPageNumber = currentPageNumber;
         notifyChange();
+    }
+
+    @Bindable
+    public int getLoadingProgressBarVisibility() {
+        return mFullPageCount != null ? View.GONE : View.VISIBLE;
     }
 
     @Bindable

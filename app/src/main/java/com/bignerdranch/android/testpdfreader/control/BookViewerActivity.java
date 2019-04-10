@@ -3,10 +3,6 @@ package com.bignerdranch.android.testpdfreader.control;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.bignerdranch.android.testpdfreader.R;
@@ -20,6 +16,11 @@ import com.bignerdranch.android.testpdfreader.model.translator.Translator;
 import com.bignerdranch.android.testpdfreader.model.translator.TranslatorFactory;
 import com.bignerdranch.android.testpdfreader.model.translator.WordTranslateListener;
 import com.bignerdranch.android.testpdfreader.model.word.Word;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BookViewerActivity extends AbstractActivityWithPermissions implements ITextSelectedReceiver, ICloseTranslationFragmentListener {
     private static final String EXTRA_RESOURCE_DESCRIPTOR =

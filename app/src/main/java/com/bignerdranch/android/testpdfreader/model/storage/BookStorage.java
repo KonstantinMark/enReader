@@ -46,6 +46,13 @@ public class BookStorage {
         mDatabase.insert(BookDbSchema.BookTable.NAME, null, values);
     }
 
+    public void remove(Uri uri) {
+        if (!contains(uri)) return;
+        mDatabase.delete(BookDbSchema.BookTable.NAME,
+                BookDbSchema.BookTable.Cols.URI + " = ?",
+                new String[]{uri.toString()});
+    }
+
     public boolean contains(Uri uri){
         for(IResource r: getAll()){
             if(r.getUri().equals(uri))
@@ -70,6 +77,23 @@ public class BookStorage {
         }
 
         return resources;
+    }
+
+    public IResource get(Uri uri) {
+        BookCursorWrapper cursor = queryBooks(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (uri.equals(cursor.getUri())) {
+                    return ResourceBuilder.build(uri, mContext);
+                }
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return null;
     }
 
     private void grantPermissions(Uri uri){

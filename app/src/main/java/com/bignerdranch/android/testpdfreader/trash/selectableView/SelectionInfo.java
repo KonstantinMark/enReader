@@ -18,7 +18,7 @@
  Date: 2013 06 03
  
  */
-package com.bignerdranch.android.testpdfreader.selectableView;
+package com.bignerdranch.android.testpdfreader.trash.selectableView;
 
 
 import android.text.Spannable;

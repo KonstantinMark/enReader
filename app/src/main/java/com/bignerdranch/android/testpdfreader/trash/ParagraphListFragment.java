@@ -1,24 +1,16 @@
-package com.bignerdranch.android.testpdfreader;
+package com.bignerdranch.android.testpdfreader.trash;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentParagraphListBinding;
-import com.bignerdranch.android.testpdfreader.textViewMod.SelectionListener;
-import com.bignerdranch.android.testpdfreader.textViewMod.UnSelectionListener;
-
+import com.google.android.material.snackbar.Snackbar;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
@@ -26,15 +18,19 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ParagraphListFragment extends Fragment {
     private static final String TAG = "ParagraphListFragment";
     private static final int OPEN_PDF_REQUEST_CODE = 1;
 
     //private ParagraphViewModel mSelected;
-    private UnSelectionListener mUnSelectionListener;
+    //private UnSelectionListener mUnSelectionListener;
 
     private Snackbar mSnackbar;
 

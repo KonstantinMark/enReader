@@ -1,10 +1,11 @@
-package com.bignerdranch.android.testpdfreader.textViewMod;
+package com.bignerdranch.android.testpdfreader.trash.textViewMod;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SelectActionCalback extends ActionMode.Callback2 {

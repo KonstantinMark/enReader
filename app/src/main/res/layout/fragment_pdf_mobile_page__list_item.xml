@@ -10,7 +10,7 @@
             type="com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItem" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_pdf_mobile_page__list_item__constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,6 +90,6 @@
                 tools:visibility="gone" />
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

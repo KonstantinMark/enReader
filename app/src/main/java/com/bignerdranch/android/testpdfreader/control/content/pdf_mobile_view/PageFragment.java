@@ -1,11 +1,8 @@
 package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +18,12 @@ import com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class PageFragment extends TextSelectorFragment {
      private String TAG = "PageFragment";
@@ -64,8 +67,17 @@ public class PageFragment extends TextSelectorFragment {
             mAdapter = new PageFragmentAdapter(mContent);
             mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setContent(mContent);
-            //mAdapter.notifyDataSetChanged();
+
+            Handler handler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.setContent(mContent);
+                    mAdapter.notifyDataSetChanged();
+                }
+            };
+            handler.postDelayed(runnable, 0);
+
         }
     }
 

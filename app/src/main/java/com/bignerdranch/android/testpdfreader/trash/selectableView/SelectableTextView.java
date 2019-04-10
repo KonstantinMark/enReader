@@ -19,7 +19,7 @@
  
  */
 
-package com.bignerdranch.android.testpdfreader.selectableView;
+package com.bignerdranch.android.testpdfreader.trash.selectableView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.bignerdranch.android.testpdfreader.R;
 
@@ -46,7 +45,7 @@ import com.bignerdranch.android.testpdfreader.R;
  * <p/>
  * The functionality WILL PROBABLY breaks if the TextView is not inside a ScrollView.
  */
-public class SelectableTextView extends android.support.v7.widget.AppCompatTextView {
+public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextView {
 
 	private int mDefaultSelectionColor;
 

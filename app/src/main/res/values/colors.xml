@@ -12,7 +12,7 @@
     <color name="unSelectedTextBackground">#6BAF919A</color>
     <color name="unSelectedText">#000000</color>
 
-    <color name="list_item_resource_text_color">#FFFFFF</color>
+    <color name="list_item_resource_text_color">#000000</color>
     <color name="bookViewBackground">#FFF</color>
     <color name="bookViewTextColor">#000</color>
 

@@ -1,14 +1,13 @@
 package com.bignerdranch.android.testpdfreader.control;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,9 +17,17 @@ import com.bignerdranch.android.testpdfreader.databinding.ListItemBookBinding;
 import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
 import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+import com.bignerdranch.android.testpdfreader.view.FragmentMainViewModel;
 import com.bignerdranch.android.testpdfreader.view.ItemResourceViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainFragment extends Fragment implements MainActivity.ResourceItemAddedListener{
 
@@ -33,21 +40,21 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         FragmentMainBinding binding = DataBindingUtil
                 .inflate(inflater, R.layout.
                                 fragment_main,
                         container, false);
+        mBinding = binding;
 
+        mBinding.setViewModel(new FragmentMainViewModel());
 
-        binding.itemsRecyclerView.setLayoutManager(
+        mBinding.itemsRecyclerView.setLayoutManager(
                 new GridLayoutManager(getContext(), 2)
         );
 
-        mBinding = binding;
         updateUI();
 
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     @Override
@@ -57,28 +64,46 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
     }
 
     private void updateUI(){
-        BookStorage storage = BookStorage.instance(getContext());
-        List<IResource> resources = storage.getAll();
+        mBinding.getViewModel().setProgressBarVisibility(true);
 
-        if(mAdapter == null){
-            mAdapter = new ResourceAdapter(resources);
-            mBinding.itemsRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setResources(resources);
-            notifyDataChanged();
-        }
-    }
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                BookStorage storage = BookStorage.instance(getContext());
+                final List<IResource> resources = storage.getAll();
 
-    private void notifyDataChanged(){
-        mAdapter.notifyDataSetChanged();
+                Handler handler = new Handler(Looper.getMainLooper());
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mAdapter == null) {
+                            mAdapter = new ResourceAdapter(resources);
+                            mBinding.itemsRecyclerView.setAdapter(mAdapter);
+                        } else {
+                            mAdapter.setResources(resources);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        mBinding.getViewModel().setProgressBarVisibility(false);
+                    }
+                };
+                handler.postDelayed(runnable, 0);
+            }
+        };
+        AsyncTask.execute(runnable);
+
     }
 
     @Override
-    public void resourceItemAdded() {
-        notifyDataChanged();
+    public void notifyItemAdded(Uri uri) {
+        BookStorage storage = BookStorage.instance(getContext());
+        IResource item = storage.get(uri);
+        if (item != null)
+            mAdapter.addItem(item);
     }
 
-    private class ResourceHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ResourceHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener,
+            View.OnLongClickListener {
         private ListItemBookBinding mBinding;
         Uri mUri;
 
@@ -92,6 +117,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             mBinding.getViewModel().setResource(resource);
             mUri = resource.getUri();
             mBinding.getRoot().setOnClickListener(this);
+            mBinding.getRoot().setOnLongClickListener(this);
         }
 
         @Override
@@ -102,6 +128,31 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
                             ResourceDescriptor.PDF_MOBILE_TYPE)
             );
             startActivity(i);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            showFilterPopup(mBinding.imageView);
+            return false;
+        }
+
+        private void showFilterPopup(View v) {
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            popup.inflate(R.menu.list_item_book__context_menu);
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.list_item_book__context_menu__delete:
+                            BookStorage bookStorage = BookStorage.instance(getContext());
+                            bookStorage.remove(mUri);
+                            mAdapter.removeItem(ResourceHolder.this.getPosition());
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+            popup.show();
         }
     }
 
@@ -126,6 +177,16 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         @Override
         public void onBindViewHolder(@NonNull ResourceHolder resourceHolder, int i) {
             resourceHolder.bind(mIResources.get(i));
+        }
+
+        public void removeItem(int position) {
+            mIResources.remove(position);
+            notifyItemRemoved(position);
+        }
+
+        public void addItem(IResource resource) {
+            mIResources.add(resource);
+            notifyItemInserted(getItemCount());
         }
 
         @Override

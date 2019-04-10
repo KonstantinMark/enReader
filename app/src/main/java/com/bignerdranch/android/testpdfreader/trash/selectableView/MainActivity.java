@@ -1,12 +1,9 @@
-package com.bignerdranch.android.testpdfreader.selectableView;
+package com.bignerdranch.android.testpdfreader.trash.selectableView;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.bignerdranch.android.testpdfreader.R;
 
 public class MainActivity extends Activity {
 

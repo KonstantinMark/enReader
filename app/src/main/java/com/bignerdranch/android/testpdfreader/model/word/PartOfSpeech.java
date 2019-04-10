@@ -1,12 +1,13 @@
 package com.bignerdranch.android.testpdfreader.model.word;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class PartOfSpeech implements Serializable {
 

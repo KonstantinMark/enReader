@@ -1,23 +1,19 @@
-package com.bignerdranch.android.testpdfreader.textViewMod;
+package com.bignerdranch.android.testpdfreader.trash.textViewMod;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.bignerdranch.android.testpdfreader.R;
 
 
-public class TextViewCustomSelectionMod extends android.support.v7.widget.AppCompatTextView
+public class TextViewCustomSelectionMod extends androidx.appcompat.widget.AppCompatTextView
                                         implements UnSelectionListener{
     private static final String TAG = "TextViewCustomSelectionMod";
 

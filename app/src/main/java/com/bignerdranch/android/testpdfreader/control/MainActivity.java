@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.model.MessageSchower;
 import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FILE_TYPE_PDF = "application/pdf";
@@ -34,18 +35,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if(resultData == null) return;
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (resultData == null) return;
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = resultData.getData();
             BookStorage bookStorage = BookStorage.instance(getApplicationContext());
-            if(!bookStorage.contains(uri)) {
+            if (!bookStorage.contains(uri)) {
                 BookStorage.instance(getApplicationContext()).addPdfUri(uri);
+                notifyResourceItemAdded(uri);
             } else {
                 MessageSchower.schow(findViewById(R.id.activity_main_root_element),
                         R.string.book_already_added, MessageSchower.DEFAULT);
             }
-            notifyResourceItemAdded();
+
         }
     }
 
@@ -80,14 +83,14 @@ public class MainActivity extends AppCompatActivity {
                         | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
     }
 
-    private void notifyResourceItemAdded(){
+    private void notifyResourceItemAdded(Uri uri) {
         if(mFragment instanceof ResourceItemAddedListener){
-            ((ResourceItemAddedListener) mFragment).resourceItemAdded();
+            ((ResourceItemAddedListener) mFragment).notifyItemAdded(uri);
 
         }
     }
 
     public interface ResourceItemAddedListener {
-        void resourceItemAdded();
+        void notifyItemAdded(Uri uri);
     }
 }

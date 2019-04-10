@@ -1,15 +1,16 @@
 package com.bignerdranch.android.testpdfreader.control.content;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfFullViewBinding;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 public class PdfFullViewFragment extends ResourceReceiverFragment {
     private static final String TAG = "PdfJsViewFragment";

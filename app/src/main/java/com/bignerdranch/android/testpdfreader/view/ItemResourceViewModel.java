@@ -1,12 +1,13 @@
 package com.bignerdranch.android.testpdfreader.view;
 
 import android.content.Context;
-import android.databinding.BaseObservable;
-import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+
+import androidx.databinding.BaseObservable;
+import androidx.databinding.BindingAdapter;
 
 public class ItemResourceViewModel extends BaseObservable {
     private Context mContext;

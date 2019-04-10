@@ -1,10 +1,7 @@
 package com.bignerdranch.android.testpdfreader.control.content;
 
 import android.annotation.SuppressLint;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +15,10 @@ import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfJsViewBindi
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 public class PdfJsViewFragment extends ResourceReceiverFragment {
     private static final String TAG = "PdfJsViewFragment";

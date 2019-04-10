@@ -1,6 +1,5 @@
-package com.bignerdranch.android.testpdfreader.textViewMod;
+package com.bignerdranch.android.testpdfreader.trash.textViewMod;
 
-import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;

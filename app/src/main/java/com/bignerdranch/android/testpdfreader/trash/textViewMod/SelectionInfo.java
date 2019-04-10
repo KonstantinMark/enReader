@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.textViewMod;
+package com.bignerdranch.android.testpdfreader.trash.textViewMod;
 
 import android.graphics.Color;
 import android.text.Spannable;

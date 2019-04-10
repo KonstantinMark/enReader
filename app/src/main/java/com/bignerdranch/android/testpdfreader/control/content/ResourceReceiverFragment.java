@@ -2,10 +2,11 @@ package com.bignerdranch.android.testpdfreader.control.content;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.PdfMobileViewFragment;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 public class ResourceReceiverFragment extends Fragment {
     private static final String ARG_URL = "uri";

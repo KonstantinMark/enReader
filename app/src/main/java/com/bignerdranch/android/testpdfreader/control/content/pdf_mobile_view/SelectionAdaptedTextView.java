@@ -3,7 +3,7 @@ package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class SelectionAdaptedTextView extends android.support.v7.widget.AppCompatTextView {
+public class SelectionAdaptedTextView extends androidx.appcompat.widget.AppCompatTextView {
 
     private OnSelectionChangListener mOnSelectionChangListener;
 

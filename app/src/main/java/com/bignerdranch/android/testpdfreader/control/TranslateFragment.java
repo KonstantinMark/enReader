@@ -1,9 +1,6 @@
 package com.bignerdranch.android.testpdfreader.control;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +12,10 @@ import com.bignerdranch.android.testpdfreader.control.content.ICloseTranslationF
 import com.bignerdranch.android.testpdfreader.databinding.FragmentTranslateBinding;
 import com.bignerdranch.android.testpdfreader.model.word.Word;
 import com.bignerdranch.android.testpdfreader.model.word.WordTool;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 // TODO word: ничего не отображает по нажатию на слово "letters"
 public class TranslateFragment extends Fragment {

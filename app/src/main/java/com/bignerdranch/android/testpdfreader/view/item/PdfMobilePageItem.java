@@ -1,8 +1,9 @@
 package com.bignerdranch.android.testpdfreader.view.item;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
 import android.view.View;
+
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 
 public class PdfMobilePageItem extends BaseObservable {
