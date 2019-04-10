@@ -3,7 +3,11 @@ package com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -62,23 +66,41 @@ public class PageFragment extends TextSelectorFragment {
         return mBinding.getRoot();
     }
 
+    private PageFragmentHolder currentSelected;
+    private boolean isRemovePossible = true;
+
     private void updateUI() {
-        if (mAdapter == null) {
-            mAdapter = new PageFragmentAdapter(mContent);
-            mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mAdapter);
-        } else {
-
-            Handler handler = new Handler(Looper.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.setContent(mContent);
-                    mAdapter.notifyDataSetChanged();
-                }
-            };
-            handler.postDelayed(runnable, 0);
-
+        if (mBinding != null) {
+            if (mAdapter == null) {
+                mAdapter = new PageFragmentAdapter(mContent);
+                mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mAdapter);
+            } else {
+                Handler handler = new Handler(Looper.getMainLooper());
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.setContent(mContent);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                };
+                handler.postDelayed(runnable, 0);
+            }
         }
+    }
+
+    private void notifyTextSelected(String text, PageFragmentHolder selected) {
+
+        isRemovePossible = false;
+        notifyTextSelected(text);
+        isRemovePossible = true;
+
+        if (currentSelected != selected) removeCurrentSelection();
+        currentSelected = selected;
+    }
+
+    public void removeCurrentSelection() {
+        if (currentSelected != null && isRemovePossible)
+            currentSelected.removeSelection();
     }
 
     public void setContent(List<String> content) {
@@ -87,13 +109,18 @@ public class PageFragment extends TextSelectorFragment {
         updateUI();
     }
 
-    private class PageFragmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener, TranslationReceiver {
+    private class PageFragmentHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener,
+            View.OnTouchListener,
+            TranslationReceiver {
         private FragmentPdfMobilePageListItemBinding mBinding;
 
         public PageFragmentHolder(FragmentPdfMobilePageListItemBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
             mBinding.fragmentPdfMobilePageListItemContentText.setOnClickListener(this);
+            mBinding.fragmentPdfMobilePageListItemContentText.setOnTouchListener(this);
+
             mBinding.fragmentPdfMobilePageListItemContentText.setOnSelectionChangListener(new SelectionAdaptedTextView.OnSelectionChangListener() {
                 @Override
                 public void onSelectionChanged(int selStart, int selEnd) {
@@ -108,7 +135,6 @@ public class PageFragment extends TextSelectorFragment {
                     }
                 }
             });
-
 
             mBinding.fragmentPdfMobilePageListItemTranslateParagraphBtn.setOnClickListener(
                     new View.OnClickListener() {
@@ -135,14 +161,48 @@ public class PageFragment extends TextSelectorFragment {
 
         @Override
         public void onClick(View v) {
-            TextView textView = (TextView) v;
-            TextManager textManager = new TextManager(textView.getText().toString());
-            notifyTextSelected(textManager.getWordSelection(textView.getSelectionStart()));
+            wordClickPrepare(v);
+        }
+
+        public void removeSelection() {
+            mBinding.fragmentPdfMobilePageListItemContentText.setText(
+                    mBinding.fragmentPdfMobilePageListItemContentText.getText().toString()
+            );
+        }
+
+        private void select(int start, int end) {
+            Spannable spannable = SpannableString.valueOf(
+                    mBinding.fragmentPdfMobilePageListItemContentText.getText().toString());
+            spannable.setSpan(
+                    new UnderLineSpan(R.color.selectedTextUnderline, R.color.selectedText),
+                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mBinding.fragmentPdfMobilePageListItemContentText.setText(spannable);
         }
 
         @Override
         public void receiveTranslation(String string) {
             mBinding.getViewModel().showTranslation(string);
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Log.i(TAG, String.valueOf(event.getAction() == MotionEvent.ACTION_UP &&
+                    !v.isFocused()));
+            if (event.getAction() == MotionEvent.ACTION_UP
+                    && !v.isFocused()) {
+                v.onTouchEvent(event);
+            }
+            return false;
+        }
+
+        public void wordClickPrepare(View v) {
+            TextView textView = (TextView) v;
+            TextManager textManager = new TextManager(textView.getText().toString());
+            int pos[] = textManager.getWordSelectionPositions(textView.getSelectionStart());
+            String selectedWord = textManager.getWordSelection(textView.getSelectionStart());
+
+            select(pos[0], pos[1]);
+            notifyTextSelected(selectedWord, PageFragmentHolder.this);
         }
     }
 

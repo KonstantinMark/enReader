@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.control.content.ICloseTranslationFragmentListener;
 import com.bignerdranch.android.testpdfreader.control.content.ITextSelectedReceiver;
+import com.bignerdranch.android.testpdfreader.control.content.ResourceReceiverFragment;
 import com.bignerdranch.android.testpdfreader.control.content.TranslationReceiver;
 import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
 import com.bignerdranch.android.testpdfreader.model.ViewFragmentFactory;
@@ -18,7 +19,6 @@ import com.bignerdranch.android.testpdfreader.model.translator.WordTranslateList
 import com.bignerdranch.android.testpdfreader.model.word.Word;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -28,6 +28,7 @@ public class BookViewerActivity extends AbstractActivityWithPermissions implemen
 
     private Translator mTranslator;
     private TranslateFragment mTranslateFragment;
+    private ResourceReceiverFragment mContentFragment;
 
     public static Intent newIntent(Context packageContext, ResourceDescriptor descriptor){
         Intent intent = new Intent(packageContext, BookViewerActivity.class);
@@ -46,17 +47,20 @@ public class BookViewerActivity extends AbstractActivityWithPermissions implemen
         setContentView(R.layout.activity_book_viewer);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment contentFragment = fm.findFragmentById(R.id.fragment_container_content);
+        mContentFragment = (ResourceReceiverFragment)
+                fm.findFragmentById(R.id.fragment_container_content);
 
-        if (contentFragment == null) {
+        if (mContentFragment == null) {
             ResourceDescriptor descriptor = (ResourceDescriptor)
                     getIntent().getSerializableExtra(EXTRA_RESOURCE_DESCRIPTOR);
 
-            contentFragment = ViewFragmentFactory.getFragment(descriptor);
+            ResourceReceiverFragment fragment = ViewFragmentFactory.getFragment(descriptor);
 
             fm.beginTransaction()
-                    .add(R.id.fragment_container_content, contentFragment)
+                    .add(R.id.fragment_container_content, fragment)
                     .commit();
+
+            mContentFragment = fragment;
         }
     }
 
@@ -91,7 +95,12 @@ public class BookViewerActivity extends AbstractActivityWithPermissions implemen
             fragmentTransaction.setCustomAnimations(R.anim.translate_hide_down, R.anim.translate_hide_up);
             fragmentTransaction.remove(mTranslateFragment).commit();
             mTranslateFragment = null;
+            notifyRemoveTranslation();
         }
+    }
+
+    public void notifyRemoveTranslation() {
+        mContentFragment.resetView();
     }
 
     private class ParagraphTranslationListenerAdapter implements ParagraphTranslateListener {

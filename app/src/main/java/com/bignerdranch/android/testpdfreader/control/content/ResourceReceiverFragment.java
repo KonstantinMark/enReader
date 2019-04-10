@@ -8,7 +8,7 @@ import com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.Pd
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class ResourceReceiverFragment extends Fragment {
+public abstract class ResourceReceiverFragment extends Fragment implements IContentViewer {
     private static final String ARG_URL = "uri";
 
     private Uri mUri;
@@ -32,5 +32,8 @@ public class ResourceReceiverFragment extends Fragment {
         return mUri;
     }
 
-
+    @Override
+    public void resetView() {
+        // DEFAUL ACTION - IGNORE
+    }
 }

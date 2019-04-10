@@ -44,13 +44,28 @@ public class TextManager {
 
     public String getWordSelection(int startPosition) {
         String word = null;
+        int pos[] = getWordSelectionPositions(startPosition);
+        int wordStartPosition = pos[0];
+        int wordEndPosition = pos[1];
+
+        if (wordStartPosition < wordEndPosition) {
+            word = mText.substring(wordStartPosition, wordEndPosition).replaceAll("\\s", "");
+
+            if (word.length() == 0) {
+                word = null;
+            }
+        }
+
+        return word;
+    }
+
+    public int[] getWordSelectionPositions(int startPosition) {
 
         int wordStartPosition = startPosition;
         int wordEndPosition = startPosition;
 
-
         if (startPosition >= mText.length()) {
-            return null;
+            return new int[]{0, 0};
         }
 
         try {
@@ -69,14 +84,10 @@ public class TextManager {
                 isLetter(mText.charAt(wordEndPosition)));
 
         if (wordStartPosition < wordEndPosition) {
-            word = mText.substring(wordStartPosition, wordEndPosition).replaceAll("\\s", "");
-
-            if (word.length() == 0) {
-                word = null;
-            }
+            return new int[]{wordStartPosition, wordEndPosition};
         }
 
-        return word;
+        return new int[]{0, 0};
     }
 
     public List<String> getParagraphs() {

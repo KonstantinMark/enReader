@@ -20,6 +20,7 @@ import com.bignerdranch.android.testpdfreader.view.item.FragmentPdfMobileViewVie
 import com.itextpdf.text.pdf.PdfReader;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,8 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
     private ICloseTranslationFragmentListener mUserNavigationActionListener;
 
     private FragmentPdfMobileViewBinding mBinding;
+    private PageFragment mCurrent;
+    private HashMap<Integer, PageFragment> pagesCache = new HashMap<>();
 
     @Override
     public void onAttach(Context context) {
@@ -72,39 +75,11 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
         return mBinding.getRoot();
     }
 
-    private class FragmentStatePagerAdapterImpl extends FragmentStatePagerAdapter {
-
-        private PageFragmentManager mManager;
-
-        public FragmentStatePagerAdapterImpl(@NonNull FragmentManager fm) {
-            super(fm);
-        }
-
-        public void setManager(final PageFragmentManager manager) {
-
-
-            final Handler handler = new Handler(Looper.getMainLooper());
-            final Runnable changeView = new Runnable() {
-                public void run() {
-                    mManager = manager;
-                    notifyDataSetChanged();
-                }
-            };
-            handler.postDelayed(changeView, 0);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            PageFragment fragment = PageFragment.newInstance();
-            if (mManager != null) mManager.load(position, fragment);
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return mManager != null ? mManager.getCount() : 0;
-        }
+    @Override
+    public void resetView() {
+        super.resetView();
+        PageFragment current = pagesCache.get(mBinding.fragmentPdfMobileViewViewPager.getCurrentItem());
+        current.removeCurrentSelection();
     }
 
     private class OnPageChangeListenerImpl implements ViewPager.OnPageChangeListener {
@@ -178,4 +153,37 @@ public class PdfMobileViewFragment extends ResourceReceiverFragment {
         }
     }
 
+    private class FragmentStatePagerAdapterImpl extends FragmentStatePagerAdapter {
+
+        private PageFragmentManager mManager;
+
+        public FragmentStatePagerAdapterImpl(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        public void setManager(final PageFragmentManager manager) {
+            final Handler handler = new Handler(Looper.getMainLooper());
+            final Runnable changeView = new Runnable() {
+                public void run() {
+                    mManager = manager;
+                    notifyDataSetChanged();
+                }
+            };
+            handler.postDelayed(changeView, 0);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            PageFragment fragment = PageFragment.newInstance();
+            if (mManager != null) mManager.load(position, fragment);
+            pagesCache.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return mManager != null ? mManager.getCount() : 0;
+        }
+    }
 }
