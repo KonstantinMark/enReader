@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.control.main_fragment.MainFragment;
+import com.bignerdranch.android.testpdfreader.databinding.ActivityMainBinding;
 import com.bignerdranch.android.testpdfreader.model.MessageSchower;
 import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,15 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
 
     private Fragment mFragment;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil
+                .setContentView(this, R.layout.activity_main);
 
         setFragmentIfNeeded();
 
-        setAddResourceBtnListener(findViewById(R.id.addResourceBtn));
+        setAddResourceBtnListener(mBinding.addResourceBtn);
     }
 
     @Override
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 BookStorage.instance(getApplicationContext()).addPdfUri(uri);
                 notifyResourceItemAdded(uri);
             } else {
-                MessageSchower.schow(findViewById(R.id.activity_main_root_element),
+                MessageSchower.schow(mBinding.getRoot(),
                         R.string.book_already_added, MessageSchower.DEFAULT);
             }
 

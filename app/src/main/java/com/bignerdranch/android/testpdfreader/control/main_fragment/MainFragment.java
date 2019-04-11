@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.control;
+package com.bignerdranch.android.testpdfreader.control.main_fragment;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.control.BookViewerActivity;
+import com.bignerdranch.android.testpdfreader.control.MainActivity;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.databinding.ListItemBookBinding;
 import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
@@ -27,9 +29,10 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainFragment extends Fragment implements MainActivity.ResourceItemAddedListener{
+public class MainFragment extends Fragment implements MainActivity.ResourceItemAddedListener {
 
     private FragmentMainBinding mBinding;
     private ResourceAdapter mAdapter;
@@ -47,10 +50,15 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         mBinding = binding;
 
         mBinding.setViewModel(new FragmentMainViewModel());
-
         mBinding.itemsRecyclerView.setLayoutManager(
-                new GridLayoutManager(getContext(), 2)
+                new GridLayoutManager(getContext(), 1)
         );
+
+
+        // set swipe helper
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new SwipeToDeleteCallback(0, ItemTouchHelper.LEFT);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
+        itemTouchHelper.attachToRecyclerView(mBinding.itemsRecyclerView);
 
         updateUI();
 
@@ -101,10 +109,10 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             mAdapter.addItem(item);
     }
 
-    private class ResourceHolder extends RecyclerView.ViewHolder
+    public class ResourceHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener,
             View.OnLongClickListener {
-        private ListItemBookBinding mBinding;
+        public ListItemBookBinding mBinding;
         Uri mUri;
 
         public ResourceHolder(ListItemBookBinding binding){
@@ -116,8 +124,9 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         public void bind(IResource resource){
             mBinding.getViewModel().setResource(resource);
             mUri = resource.getUri();
-            mBinding.getRoot().setOnClickListener(this);
-            mBinding.getRoot().setOnLongClickListener(this);
+            mBinding.listItemBookRootElement.setOnClickListener(this);
+            mBinding.listItemBookRootElement.setOnLongClickListener(this);
+
         }
 
         @Override
@@ -156,7 +165,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         }
     }
 
-    private class ResourceAdapter extends RecyclerView.Adapter<ResourceHolder> {
+    public class ResourceAdapter extends RecyclerView.Adapter<ResourceHolder> {
 
         private List<IResource> mIResources;
 
@@ -186,7 +195,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
 
         public void addItem(IResource resource) {
             mIResources.add(resource);
-            notifyItemInserted(getItemCount());
+            notifyDataSetChanged();
         }
 
         @Override

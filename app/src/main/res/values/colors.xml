@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#DFBCC9</color>
 
+    <color name="delete_bacground">#DFBCC9</color>
+
     <color name="dark">#000</color>
 
     <color name="selectedTextBackground">#8BC34A</color>
@@ -17,6 +19,8 @@
     <color name="list_item_resource_text_color">#000000</color>
     <color name="bookViewBackground">#FFF</color>
     <color name="bookViewTextColor">#000</color>
+
+    <color name="books_background">#FFF</color>
 
     <color name="listContentBackground">#ffffff</color>
     <color name="listBookElementBackground">#ffffff</color>
