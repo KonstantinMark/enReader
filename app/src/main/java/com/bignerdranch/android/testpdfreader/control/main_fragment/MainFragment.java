@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
-import com.bignerdranch.android.testpdfreader.control.BookViewerActivity;
 import com.bignerdranch.android.testpdfreader.control.MainActivity;
+import com.bignerdranch.android.testpdfreader.control.ResourceViewerActivity;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.databinding.ListItemBookBinding;
 import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
-import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
+import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.MetaDataManager;
 import com.bignerdranch.android.testpdfreader.view.FragmentMainViewModel;
 import com.bignerdranch.android.testpdfreader.view.ItemResourceViewModel;
 import com.google.android.material.snackbar.Snackbar;
@@ -85,7 +86,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                BookStorage storage = BookStorage.instance(getContext());
+                Storage storage = Storage.instance(getContext());
                 final List<IResource> resources = storage.getAll();
 
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -110,11 +111,9 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
     }
 
     @Override
-    public void notifyItemAdded(Uri uri) {
-        BookStorage storage = BookStorage.instance(getContext());
-        IResource item = storage.get(uri);
-        if (item != null)
-            mAdapter.addItem(item);
+    public void notifyItemAdded(IResource resource) {
+        if (resource != null)
+            mAdapter.addItem(resource, 0);
     }
 
     public class ResourceHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -142,7 +141,23 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         @Override
         public void onClick(View v) {
             mAdapter.changCurrentInDeleteMod(null);
-            Intent i = BookViewerActivity.newIntent(
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Storage storage = Storage.instance(getContext());
+                    IResource resource = storage.get(mUri);
+                    MetaDataManager metaDataManager = new MetaDataManager();
+                    metaDataManager.setLastOpenedDateCurrent(resource);
+                    storage.update(resource);
+                }
+            };
+            AsyncTask.execute(runnable);
+
+            final int position = ResourceHolder.this.getPosition();
+            mAdapter.moveItem(position, 0);
+
+            Intent i = ResourceViewerActivity.newIntent(
                     getContext(),
                     new ResourceDescriptor(mUri.toString(),
                             ResourceDescriptor.PDF_MOBILE_TYPE)
@@ -155,13 +170,15 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             public void onClick(View v) {
                 mBookItemTouchListener.setDefault();
 
-                mAdapter.removeItem(ResourceHolder.this.getPosition());
+                final int position = ResourceHolder.this.getPosition();
+                mAdapter.removeItem(position);
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
-                        final BookStorage bookStorage = BookStorage.instance(getContext());
-                        final IResource resource = bookStorage.get(mUri);
-                        bookStorage.remove(mUri);
+                        final Storage storage = Storage.instance(getContext());
+                        final IResource resource = storage.get(mUri);
+                        storage.remove(resource);
+
                         Snackbar.make(getView(), "UNDO?", Snackbar.LENGTH_LONG)
                                 .setAction("YES", new View.OnClickListener() {
                                     @Override
@@ -169,7 +186,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
                                         Runnable runnable1 = new Runnable() {
                                             @Override
                                             public void run() {
-                                                bookStorage.addPdfUri(mUri);
+                                                storage.add(resource);
                                             }
                                         };
                                         AsyncTask.execute(runnable1);
@@ -178,7 +195,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
                                         Runnable runnable = new Runnable() {
                                             @Override
                                             public void run() {
-                                                mAdapter.addItem(resource);
+                                                mAdapter.addItem(resource, position);
                                             }
                                         };
                                         handler.postDelayed(runnable, 0);
@@ -232,6 +249,11 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             });
         }
 
+        public void moveItem(int from, int to) {
+            mIResources.add(to, mIResources.remove(from));
+            notifyItemMoved(from, to);
+        }
+
         public void removeItem(int position) {
             changCurrentInDeleteMod(null);
             mIResources.remove(position);
@@ -247,10 +269,10 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             mIResources = resources;
         }
 
-        public void addItem(IResource resource) {
+        public void addItem(IResource resource, int position) {
             changCurrentInDeleteMod(null);
-            mIResources.add(resource);
-            notifyItemInserted(mIResources.size());
+            mIResources.add(position, resource);
+            notifyItemInserted(position);
         }
 
         public void changCurrentInDeleteMod(ResourceHolder holder) {

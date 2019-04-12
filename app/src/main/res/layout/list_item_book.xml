@@ -10,8 +10,6 @@
     </data>
 
 
-
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/list_item_book__root_element"
             android:layout_width="match_parent"

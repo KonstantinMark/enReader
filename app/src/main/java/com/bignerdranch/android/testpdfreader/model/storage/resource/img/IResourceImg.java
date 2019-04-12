@@ -1,7 +1,7 @@
 package com.bignerdranch.android.testpdfreader.model.storage.resource.img;
 
-import android.graphics.Bitmap;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 
 public interface IResourceImg {
-    Bitmap get();
+    void setImage(IResource resource);
 }

@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".control.BookViewerActivity"/>
+        <activity android:name=".control.ResourceViewerActivity" />
     </application>
 
 </manifest>

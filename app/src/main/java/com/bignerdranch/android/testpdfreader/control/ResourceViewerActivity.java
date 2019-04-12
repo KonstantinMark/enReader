@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class BookViewerActivity extends AbstractActivityWithPermissions implements ITextSelectedReceiver, ICloseTranslationFragmentListener {
+public class ResourceViewerActivity extends AbstractActivityWithPermissions implements ITextSelectedReceiver, ICloseTranslationFragmentListener {
     private static final String EXTRA_RESOURCE_DESCRIPTOR =
             "com.bignerdranch.android.testpdfreader.model.ResourceDescriptor.resource_descriptor";
 
@@ -30,15 +30,15 @@ public class BookViewerActivity extends AbstractActivityWithPermissions implemen
     private TranslateFragment mTranslateFragment;
     private ResourceReceiverFragment mContentFragment;
 
-    public static Intent newIntent(Context packageContext, ResourceDescriptor descriptor){
-        Intent intent = new Intent(packageContext, BookViewerActivity.class);
-        intent.putExtra(EXTRA_RESOURCE_DESCRIPTOR, descriptor);
-        return intent;
-    }
-
-    public BookViewerActivity() {
+    public ResourceViewerActivity() {
         TranslatorFactory translatorFactory = new TranslatorFactory();
         mTranslator = translatorFactory.newInstance();
+    }
+
+    public static Intent newIntent(Context packageContext, ResourceDescriptor descriptor){
+        Intent intent = new Intent(packageContext, ResourceViewerActivity.class);
+        intent.putExtra(EXTRA_RESOURCE_DESCRIPTOR, descriptor);
+        return intent;
     }
 
     @Override

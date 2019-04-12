@@ -10,7 +10,10 @@ import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.control.main_fragment.MainFragment;
 import com.bignerdranch.android.testpdfreader.databinding.ActivityMainBinding;
 import com.bignerdranch.android.testpdfreader.model.MessageSchower;
-import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
+import com.bignerdranch.android.testpdfreader.model.storage.PermissionManager;
+import com.bignerdranch.android.testpdfreader.model.storage.Storage;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,10 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = resultData.getData();
-            BookStorage bookStorage = BookStorage.instance(getApplicationContext());
-            if (!bookStorage.contains(uri)) {
-                BookStorage.instance(getApplicationContext()).addPdfUri(uri);
-                notifyResourceItemAdded(uri);
+            Storage storage = Storage.instance(getApplicationContext());
+            if (!storage.contains(uri)) {
+
+                PermissionManager permissionManager = new PermissionManager(getApplicationContext());
+                permissionManager.grantPermissions(uri);
+                ResourceBuilder builder = new ResourceBuilder(getApplicationContext());
+                IResource resource = builder.buildNew(uri);
+                Storage.instance(getApplicationContext()).add(resource);
+
+                notifyResourceItemAdded(resource);
             } else {
                 MessageSchower.schow(mBinding.getRoot(),
                         R.string.book_already_added, MessageSchower.DEFAULT);
@@ -88,14 +97,14 @@ public class MainActivity extends AppCompatActivity {
                         | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
     }
 
-    private void notifyResourceItemAdded(Uri uri) {
+    private void notifyResourceItemAdded(IResource resource) {
         if(mFragment instanceof ResourceItemAddedListener){
-            ((ResourceItemAddedListener) mFragment).notifyItemAdded(uri);
+            ((ResourceItemAddedListener) mFragment).notifyItemAdded(resource);
 
         }
     }
 
     public interface ResourceItemAddedListener {
-        void notifyItemAdded(Uri uri);
+        void notifyItemAdded(IResource resource);
     }
 }

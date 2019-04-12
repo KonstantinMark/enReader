@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import static com.bignerdranch.android.testpdfreader.model.storage.db.BookDbSchema.BookTable.NAME;
 
 public class BookBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DATABASE_NAME = "engReader.db";
 
     public BookBaseHelper(Context context){
@@ -19,7 +19,9 @@ public class BookBaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table "  + NAME + "(" +
                 "_id integer primary key autoincrement, " +
                         BookDbSchema.BookTable.Cols.URI + "," +
-                        BookDbSchema.BookTable.Cols.TYPE +
+                        BookDbSchema.BookTable.Cols.TYPE + "," +
+                        BookDbSchema.BookTable.Cols.STATE + "," +
+                        BookDbSchema.BookTable.Cols.DATE_LAST_OPENED +
                         ")"
                 );
     }

@@ -2,7 +2,6 @@ package com.bignerdranch.android.testpdfreader.model.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
@@ -13,44 +12,53 @@ import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class BookStorage {
-    private static String TAG = "BookStorage";
+public class Storage {
+    private static String TAG = "Storage";
 
-    private static BookStorage mInstance;
+    private static Storage mInstance;
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    public static BookStorage instance(Context context){
-        if(mInstance == null){
-            mInstance = new BookStorage(context);
-        }
-
-        return mInstance;
-    }
-
-    private BookStorage(Context context){
+    private Storage(Context context) {
         mContext = context;
         mDatabase = new BookBaseHelper(mContext).getWritableDatabase();
     }
 
-
-    public void addPdfUri(Uri uri){
-        if(contains(uri)) return;
-
-        grantPermissions(uri);
-        IResource resource = ResourceBuilder.build(uri, mContext);
-        ContentValues values = getContentValues(resource);
-
-        mDatabase.insert(BookDbSchema.BookTable.NAME, null, values);
+    public static Storage instance(Context context) {
+        if(mInstance == null){
+            mInstance = new Storage(context);
+        }
+        return mInstance;
     }
 
-    public void remove(Uri uri) {
-        if (!contains(uri)) return;
-        mDatabase.delete(BookDbSchema.BookTable.NAME,
-                BookDbSchema.BookTable.Cols.URI + " = ?",
-                new String[]{uri.toString()});
+    private static ContentValues getContentValues(IResource resource) {
+        ContentValues values = new ContentValues();
+        values.put(BookDbSchema.BookTable.Cols.URI, resource.getUri().toString());
+        values.put(BookDbSchema.BookTable.Cols.TYPE, resource.getType().toString());
+        values.put(BookDbSchema.BookTable.Cols.STATE, resource.getMetaData().getState());
+        values.put(BookDbSchema.BookTable.Cols.DATE_LAST_OPENED, resource.getMetaData().getTimeLastOpened().toString());
+        return values;
+    }
+
+    public long add(IResource resource) {
+        if (contains(resource)) return 0;
+        ContentValues values = getContentValues(resource);
+        return mDatabase.insert(BookDbSchema.BookTable.NAME, null, values);
+    }
+
+    public boolean contains(IResource resource) {
+        if (resource == null) return false;
+        for (IResource r : getAll()) {
+            if (r.equals(resource)) return true;
+        }
+        return false;
+    }
+
+    public int remove(IResource resource) {
+        return remove(resource.getUri());
     }
 
     public boolean contains(Uri uri){
@@ -61,6 +69,12 @@ public class BookStorage {
         return false;
     }
 
+    public int remove(Uri uri) {
+        return mDatabase.delete(BookDbSchema.BookTable.NAME,
+                BookDbSchema.BookTable.Cols.URI + " = ?",
+                new String[]{uri.toString()});
+    }
+
     public List<IResource> getAll(){
         List<IResource> resources = new ArrayList<>();
         BookCursorWrapper cursor  = queryBooks(null, null);
@@ -68,14 +82,15 @@ public class BookStorage {
         try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                Uri uri = cursor.getUri();
-                resources.add(ResourceBuilder.build(uri, mContext));
+                resources.add(new ResourceBuilder(mContext).build(cursor));
                 cursor.moveToNext();
             }
         } finally {
             cursor.close();
         }
 
+        Collections.sort(resources);
+        Collections.reverse(resources);
         return resources;
     }
 
@@ -85,7 +100,7 @@ public class BookStorage {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 if (uri.equals(cursor.getUri())) {
-                    return ResourceBuilder.build(uri, mContext);
+                    return new ResourceBuilder(mContext).build(cursor);
                 }
                 cursor.moveToNext();
             }
@@ -96,18 +111,13 @@ public class BookStorage {
         return null;
     }
 
-    private void grantPermissions(Uri uri){
-        mContext.grantUriPermission(mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        mContext.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    }
-
-
-    private static ContentValues getContentValues(IResource resource){
-        ContentValues values = new ContentValues();
-        values.put(BookDbSchema.BookTable.Cols.URI, resource.getUri().toString());
-        values.put(BookDbSchema.BookTable.Cols.TYPE, resource.getType().toString());
-
-        return values;
+    public long update(IResource resource) {
+        if (!contains(resource)) return 0;
+        ContentValues values = getContentValues(resource);
+        return mDatabase.update(BookDbSchema.BookTable.NAME, values,
+                BookDbSchema.BookTable.Cols.URI + " = ?",
+                new String[]{resource.getUri().toString()}
+        );
     }
 
     private BookCursorWrapper queryBooks(String whereClause, String[] whereArgs){

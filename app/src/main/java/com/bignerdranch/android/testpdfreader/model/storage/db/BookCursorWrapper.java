@@ -4,9 +4,9 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.net.Uri;
 
-import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
-import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
-import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceType;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
+
+import java.sql.Timestamp;
 
 public class BookCursorWrapper extends CursorWrapper {
     /**
@@ -19,7 +19,22 @@ public class BookCursorWrapper extends CursorWrapper {
     }
 
     public Uri getUri() {
-        String stringUri  = getString(getColumnIndex(BookDbSchema.BookTable.Cols.URI));
-        return Uri.parse(stringUri);
+        return Uri.parse(get(BookDbSchema.BookTable.Cols.URI));
+    }
+
+    public ResourceType getType() {
+        return ResourceType.valueOf(get(BookDbSchema.BookTable.Cols.TYPE));
+    }
+
+    public String getState() {
+        return get(BookDbSchema.BookTable.Cols.STATE);
+    }
+
+    public Timestamp getTime() {
+        return Timestamp.valueOf(get(BookDbSchema.BookTable.Cols.DATE_LAST_OPENED));
+    }
+
+    private String get(String col) {
+        return getString(getColumnIndex(col));
     }
 }
