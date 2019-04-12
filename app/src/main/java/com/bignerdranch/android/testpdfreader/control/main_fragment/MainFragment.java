@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,19 +21,18 @@ import com.bignerdranch.android.testpdfreader.model.storage.BookStorage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 import com.bignerdranch.android.testpdfreader.view.FragmentMainViewModel;
 import com.bignerdranch.android.testpdfreader.view.ItemResourceViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainFragment extends Fragment implements MainActivity.ResourceItemAddedListener {
-
+    private String TAG = "MainFragment";
     private FragmentMainBinding mBinding;
     private ResourceAdapter mAdapter;
 
@@ -55,15 +54,24 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         );
 
 
-        // set swipe helper
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new SwipeToDeleteCallback(0, ItemTouchHelper.LEFT);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
-        itemTouchHelper.attachToRecyclerView(mBinding.itemsRecyclerView);
+        mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return false;
+                    }
+                });
+                return false;
+            }
+        });
 
         updateUI();
 
         return mBinding.getRoot();
     }
+
 
     @Override
     public void onResume() {
@@ -109,28 +117,31 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             mAdapter.addItem(item);
     }
 
-    public class ResourceHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener,
-            View.OnLongClickListener {
+    public class ResourceHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ListItemBookBinding mBinding;
         Uri mUri;
+        BookItemTouchListener mBookItemTouchListener;
 
         public ResourceHolder(ListItemBookBinding binding){
             super(binding.getRoot());
             mBinding = binding;
-            mBinding.setViewModel(new ItemResourceViewModel(getContext()));
+            mBookItemTouchListener = new BookItemTouchListener(this, MainFragment.this.mAdapter, getContext());
+            mBinding.listItemBookForeground.setOnTouchListener(mBookItemTouchListener);
+            mBinding.listItemBookForeground.setOnClickListener(this);
+            mBinding.listItemBookBackground.setOnClickListener(new OnDeleteListener());
         }
 
         public void bind(IResource resource){
+            mBinding.setViewModel(new ItemResourceViewModel(getContext()));
             mBinding.getViewModel().setResource(resource);
             mUri = resource.getUri();
-            mBinding.listItemBookRootElement.setOnClickListener(this);
-            mBinding.listItemBookRootElement.setOnLongClickListener(this);
+
+            mBookItemTouchListener.refresh();
 
         }
-
         @Override
         public void onClick(View v) {
+            mAdapter.changCurrentInDeleteMod(null);
             Intent i = BookViewerActivity.newIntent(
                     getContext(),
                     new ResourceDescriptor(mUri.toString(),
@@ -139,39 +150,54 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             startActivity(i);
         }
 
-        @Override
-        public boolean onLongClick(View v) {
-            showFilterPopup(mBinding.imageView);
-            return false;
+        public class OnDeleteListener implements View.OnClickListener {
+            @Override
+            public void onClick(View v) {
+                mBookItemTouchListener.setDefault();
+
+                mAdapter.removeItem(ResourceHolder.this.getPosition());
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        final BookStorage bookStorage = BookStorage.instance(getContext());
+                        final IResource resource = bookStorage.get(mUri);
+                        bookStorage.remove(mUri);
+                        Snackbar.make(getView(), "UNDO?", Snackbar.LENGTH_LONG)
+                                .setAction("YES", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Runnable runnable1 = new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                bookStorage.addPdfUri(mUri);
+                                            }
+                                        };
+                                        AsyncTask.execute(runnable1);
+
+                                        Handler handler = new Handler(Looper.getMainLooper());
+                                        Runnable runnable = new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mAdapter.addItem(resource);
+                                            }
+                                        };
+                                        handler.postDelayed(runnable, 0);
+                                    }
+
+                                }).show();
+
+                    }
+                };
+                AsyncTask.execute(runnable);
+            }
         }
 
-        private void showFilterPopup(View v) {
-            PopupMenu popup = new PopupMenu(getContext(), v);
-            popup.inflate(R.menu.list_item_book__context_menu);
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.list_item_book__context_menu__delete:
-                            BookStorage bookStorage = BookStorage.instance(getContext());
-                            bookStorage.remove(mUri);
-                            mAdapter.removeItem(ResourceHolder.this.getPosition());
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            });
-            popup.show();
-        }
     }
 
     public class ResourceAdapter extends RecyclerView.Adapter<ResourceHolder> {
-
         private List<IResource> mIResources;
 
-        public ResourceAdapter(List<IResource> resourceList){
-            mIResources = resourceList;
-        }
+        private ResourceHolder mCurrentInDeleteMod;
 
         @NonNull
         @Override
@@ -183,19 +209,33 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             return new ResourceHolder(binding);
         }
 
+        public ResourceAdapter(List<IResource> resourceList) {
+            mIResources = resourceList;
+            mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN)
+                        changCurrentInDeleteMod(null);
+                    return false;
+                }
+            });
+        }
+
         @Override
         public void onBindViewHolder(@NonNull ResourceHolder resourceHolder, int i) {
             resourceHolder.bind(mIResources.get(i));
+            mBinding.itemsRecyclerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changCurrentInDeleteMod(null);
+                }
+            });
         }
 
         public void removeItem(int position) {
+            changCurrentInDeleteMod(null);
             mIResources.remove(position);
             notifyItemRemoved(position);
-        }
-
-        public void addItem(IResource resource) {
-            mIResources.add(resource);
-            notifyDataSetChanged();
         }
 
         @Override
@@ -205,6 +245,22 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
 
         public void setResources(List<IResource> resources){
             mIResources = resources;
+        }
+
+        public void addItem(IResource resource) {
+            changCurrentInDeleteMod(null);
+            mIResources.add(resource);
+            notifyItemInserted(mIResources.size());
+        }
+
+        public void changCurrentInDeleteMod(ResourceHolder holder) {
+            if (mCurrentInDeleteMod != null && mCurrentInDeleteMod != holder)
+                mCurrentInDeleteMod.mBookItemTouchListener.setDefault();
+            mCurrentInDeleteMod = holder;
+        }
+
+        public void forgetMe(ResourceHolder holder) {
+            if (mCurrentInDeleteMod == holder) mCurrentInDeleteMod = null;
         }
     }
 }

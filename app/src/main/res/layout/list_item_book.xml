@@ -10,19 +10,10 @@
     </data>
 
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/list_item_book__root_element"
-        style="@style/Widget.MaterialComponents.CardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:background="@color/books_background"
-        android:shadowColor="@color/books_background"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/list_item_book__root_element"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -121,8 +112,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
 
 
 </layout>

@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#DFBCC9</color>
 
-    <color name="delete_bacground">#DFBCC9</color>
+
 
     <color name="dark">#000</color>
 
@@ -24,4 +24,6 @@
 
     <color name="listContentBackground">#ffffff</color>
     <color name="listBookElementBackground">#ffffff</color>
+    <color name="listBookElementBackground_selected">#F0F0F0</color>
+    <color name="delete_bacground">#DFBCC9</color>
 </resources>

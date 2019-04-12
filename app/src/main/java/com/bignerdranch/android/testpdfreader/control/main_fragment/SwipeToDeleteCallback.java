@@ -12,16 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-enum ButtonsState {
-    GONE,
-    VISIBLE
-}
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private String TAG = "SwipeToDeleteCallback";
     private HashMap<RecyclerView.ViewHolder, ButtonsState> viewHoldersStated = new HashMap<>();
 
-    private ButtonsState buttonShowedState = ButtonsState.GONE;
+
     private RectF buttonInstance = null;
     private boolean swipeBack = false;
 
