@@ -26,10 +26,13 @@ public class BookCursorWrapper extends CursorWrapper {
         return ResourceType.valueOf(get(BookDbSchema.BookTable.Cols.TYPE));
     }
 
-    public String getState() {
-        return get(BookDbSchema.BookTable.Cols.STATE);
+    public int getCurrentPage() {
+        return Integer.parseInt(get(BookDbSchema.BookTable.Cols.CURRENT_PAGE));
     }
 
+    public int getScrollOnPage() {
+        return Integer.parseInt(get(BookDbSchema.BookTable.Cols.ITEM_ON_PAGE));
+    }
     public Timestamp getTime() {
         return Timestamp.valueOf(get(BookDbSchema.BookTable.Cols.DATE_LAST_OPENED));
     }

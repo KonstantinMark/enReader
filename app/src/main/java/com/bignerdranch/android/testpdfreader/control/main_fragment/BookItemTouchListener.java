@@ -25,7 +25,7 @@ public class BookItemTouchListener implements View.OnTouchListener {
 
     public void refresh() {
         mBackgroundWidth = mHolder.mBinding.listItemBookBackground.getWidth();
-        Log.i(TAG, String.valueOf(mBackgroundWidth));
+        setDefault();
     }
 
     private float getBackgroundWidth() {
@@ -108,19 +108,20 @@ public class BookItemTouchListener implements View.OnTouchListener {
     private void setDeleteBtnVisibleState() {
         moveStart = null;
         movedBeforeUp = false;
-        mHolder.mBinding.listItemBookForeground.setOnClickListener(mHolder);
-
-        mHolder.mBinding.listItemBookForeground.animate().translationX(-getBackgroundWidth());
+        mHolder.setListeners();
         mHolder.mBinding.listItemBookForeground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDeleteBtnInvisibleState();
             }
         });
+        mAdapter.changCurrentInDeleteMod(mHolder);
+        mHolder.mBinding.listItemBookForeground.animate().translationX(-getBackgroundWidth());
+
     }
 
     private void setDeleteBtnInvisibleState() {
-        mHolder.mBinding.listItemBookForeground.setOnClickListener(mHolder);
+        mHolder.setListeners();
         mAdapter.forgetMe(mHolder);
         mHolder.mBinding.listItemBookForeground.animate().translationX(0);
     }

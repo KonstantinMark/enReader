@@ -12,7 +12,6 @@ import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Storage {
@@ -32,15 +31,6 @@ public class Storage {
             mInstance = new Storage(context);
         }
         return mInstance;
-    }
-
-    private static ContentValues getContentValues(IResource resource) {
-        ContentValues values = new ContentValues();
-        values.put(BookDbSchema.BookTable.Cols.URI, resource.getUri().toString());
-        values.put(BookDbSchema.BookTable.Cols.TYPE, resource.getType().toString());
-        values.put(BookDbSchema.BookTable.Cols.STATE, resource.getMetaData().getState());
-        values.put(BookDbSchema.BookTable.Cols.DATE_LAST_OPENED, resource.getMetaData().getTimeLastOpened().toString());
-        return values;
     }
 
     public long add(IResource resource) {
@@ -88,27 +78,17 @@ public class Storage {
         } finally {
             cursor.close();
         }
-
-        Collections.sort(resources);
-        Collections.reverse(resources);
         return resources;
     }
 
-    public IResource get(Uri uri) {
-        BookCursorWrapper cursor = queryBooks(null, null);
-        try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                if (uri.equals(cursor.getUri())) {
-                    return new ResourceBuilder(mContext).build(cursor);
-                }
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
-
-        return null;
+    private static ContentValues getContentValues(IResource resource) {
+        ContentValues values = new ContentValues();
+        values.put(BookDbSchema.BookTable.Cols.URI, resource.getUri().toString());
+        values.put(BookDbSchema.BookTable.Cols.TYPE, resource.getType().toString());
+        values.put(BookDbSchema.BookTable.Cols.CURRENT_PAGE, resource.getMetaData().getCurrentPage());
+        values.put(BookDbSchema.BookTable.Cols.ITEM_ON_PAGE, resource.getMetaData().getItemOnPage());
+        values.put(BookDbSchema.BookTable.Cols.DATE_LAST_OPENED, resource.getMetaData().getTimeLastOpened().toString());
+        return values;
     }
 
     public long update(IResource resource) {
@@ -130,6 +110,24 @@ public class Storage {
                 null,
                 null
         ));
+    }
+
+    public IResource get(Uri uri) {
+        if (uri == null) return null;
+        BookCursorWrapper cursor = queryBooks(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (uri.equals(cursor.getUri())) {
+                    return new ResourceBuilder(mContext).build(cursor);
+                }
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return null;
     }
 
 }

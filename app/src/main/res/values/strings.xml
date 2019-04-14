@@ -4,7 +4,11 @@
     <string name="book_already_added">Book already added</string>
     <string name="word_not_found">Неудалось перевести слово</string>
     <string name="list_item_book__context_menu__delete_title">Delete</string>
-    <string name="delete">DELETE</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_undo_title">Отменить?</string>
+    <string name="delete_undo_btn">да</string>
+    <string name="resource_loading_error">Ошибка при загрузке ресурса</string>
+    <string name="translation_error">Не удалось пересести</string>
 
 
 </resources>

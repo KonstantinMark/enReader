@@ -1,7 +1,5 @@
 package com.bignerdranch.android.testpdfreader.control.main_fragment;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,17 +11,14 @@ import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.control.MainActivity;
-import com.bignerdranch.android.testpdfreader.control.ResourceViewerActivity;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.databinding.ListItemBookBinding;
-import com.bignerdranch.android.testpdfreader.model.ResourceDescriptor;
 import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
-import com.bignerdranch.android.testpdfreader.model.storage.resource.MetaDataManager;
 import com.bignerdranch.android.testpdfreader.view.FragmentMainViewModel;
-import com.bignerdranch.android.testpdfreader.view.ItemResourceViewModel;
-import com.google.android.material.snackbar.Snackbar;
+import com.bignerdranch.android.testpdfreader.view.item.ResourceItemViewModel;
 
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -41,38 +36,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         return new MainFragment();
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentMainBinding binding = DataBindingUtil
-                .inflate(inflater, R.layout.
-                                fragment_main,
-                        container, false);
-        mBinding = binding;
-
-        mBinding.setViewModel(new FragmentMainViewModel());
-        mBinding.itemsRecyclerView.setLayoutManager(
-                new GridLayoutManager(getContext(), 1)
-        );
-
-
-        mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return false;
-                    }
-                });
-                return false;
-            }
-        });
-
-        updateUI();
-
-        return mBinding.getRoot();
-    }
-
+    private Storage storage;
 
     @Override
     public void onResume() {
@@ -80,34 +44,62 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         updateUI();
     }
 
-    private void updateUI(){
-        mBinding.getViewModel().setProgressBarVisibility(true);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mBinding = DataBindingUtil
+                .inflate(inflater, R.layout.
+                                fragment_main,
+                        container, false);
 
+        mBinding.setViewModel(new FragmentMainViewModel());
+        mBinding.itemsRecyclerView.setLayoutManager(
+                new GridLayoutManager(getContext(), 1)
+        );
+
+        updateUI();
+
+        return mBinding.getRoot();
+    }
+
+    private void updateUI(){
+        setAnimationVisibility(true);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Storage storage = Storage.instance(getContext());
-                final List<IResource> resources = storage.getAll();
-
-                Handler handler = new Handler(Looper.getMainLooper());
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
-                        if (mAdapter == null) {
-                            mAdapter = new ResourceAdapter(resources);
-                            mBinding.itemsRecyclerView.setAdapter(mAdapter);
-                        } else {
-                            mAdapter.setResources(resources);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                        mBinding.getViewModel().setProgressBarVisibility(false);
+                        updateResourcesList();
+                        setAnimationVisibility(false);
                     }
                 };
-                handler.postDelayed(runnable, 0);
+                new Handler(Looper.getMainLooper()).postDelayed(runnable, 0);
             }
         };
         AsyncTask.execute(runnable);
+    }
 
+    private void setAnimationVisibility(boolean visibility) {
+        mBinding.getViewModel().setProgressBarVisibility(visibility);
+    }
+
+    private void updateResourcesList() {
+        final List<IResource> resources = getResourceList();
+        if (mAdapter == null) {
+            mAdapter = new ResourceAdapter(resources);
+            mBinding.itemsRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setResources(resources);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private List<IResource> getResourceList() {
+        if (storage == null) storage = Storage.instance(getContext());
+        List<IResource> resources = storage.getAll();
+        Collections.sort(resources);
+        Collections.reverse(resources);
+        return resources;
     }
 
     @Override
@@ -116,97 +108,33 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             mAdapter.addItem(resource, 0);
     }
 
-    public class ResourceHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ResourceHolder extends RecyclerView.ViewHolder {
         public ListItemBookBinding mBinding;
-        Uri mUri;
+        IResource mResource;
         BookItemTouchListener mBookItemTouchListener;
+
 
         public ResourceHolder(ListItemBookBinding binding){
             super(binding.getRoot());
             mBinding = binding;
             mBookItemTouchListener = new BookItemTouchListener(this, MainFragment.this.mAdapter, getContext());
+            setListeners();
+        }
+
+        public void setListeners() {
             mBinding.listItemBookForeground.setOnTouchListener(mBookItemTouchListener);
-            mBinding.listItemBookForeground.setOnClickListener(this);
-            mBinding.listItemBookBackground.setOnClickListener(new OnDeleteListener());
+            mBinding.listItemBookForeground.setOnClickListener(new OnResourceClickListener(
+                    getContext(), mAdapter, getAdapterPosition(), mResource));
+            mBinding.listItemBookBackground.setOnClickListener(new OnResourceDeleteListener(
+                    getContext(), mAdapter, getAdapterPosition(), mResource, getView()));
         }
 
         public void bind(IResource resource){
-            mBinding.setViewModel(new ItemResourceViewModel(getContext()));
-            mBinding.getViewModel().setResource(resource);
-            mUri = resource.getUri();
-
+            ResourceItemViewModel model = new ResourceItemViewModel(getContext());
+            model.setResource(resource);
+            mBinding.setViewModel(model);
+            mResource = resource;
             mBookItemTouchListener.refresh();
-
-        }
-        @Override
-        public void onClick(View v) {
-            mAdapter.changCurrentInDeleteMod(null);
-
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    Storage storage = Storage.instance(getContext());
-                    IResource resource = storage.get(mUri);
-                    MetaDataManager metaDataManager = new MetaDataManager();
-                    metaDataManager.setLastOpenedDateCurrent(resource);
-                    storage.update(resource);
-                }
-            };
-            AsyncTask.execute(runnable);
-
-            final int position = ResourceHolder.this.getPosition();
-            mAdapter.moveItem(position, 0);
-
-            Intent i = ResourceViewerActivity.newIntent(
-                    getContext(),
-                    new ResourceDescriptor(mUri.toString(),
-                            ResourceDescriptor.PDF_MOBILE_TYPE)
-            );
-            startActivity(i);
-        }
-
-        public class OnDeleteListener implements View.OnClickListener {
-            @Override
-            public void onClick(View v) {
-                mBookItemTouchListener.setDefault();
-
-                final int position = ResourceHolder.this.getPosition();
-                mAdapter.removeItem(position);
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        final Storage storage = Storage.instance(getContext());
-                        final IResource resource = storage.get(mUri);
-                        storage.remove(resource);
-
-                        Snackbar.make(getView(), "UNDO?", Snackbar.LENGTH_LONG)
-                                .setAction("YES", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Runnable runnable1 = new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                storage.add(resource);
-                                            }
-                                        };
-                                        AsyncTask.execute(runnable1);
-
-                                        Handler handler = new Handler(Looper.getMainLooper());
-                                        Runnable runnable = new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mAdapter.addItem(resource, position);
-                                            }
-                                        };
-                                        handler.postDelayed(runnable, 0);
-                                    }
-
-                                }).show();
-
-                    }
-                };
-                AsyncTask.execute(runnable);
-            }
         }
 
     }
@@ -250,6 +178,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         }
 
         public void moveItem(int from, int to) {
+            changCurrentInDeleteMod(null);
             mIResources.add(to, mIResources.remove(from));
             notifyItemMoved(from, to);
         }

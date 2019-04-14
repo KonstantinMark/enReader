@@ -6,7 +6,7 @@
 
       <variable
           name="viewModel"
-          type="com.bignerdranch.android.testpdfreader.view.item.FragmentPdfMobileViewViewModal" />
+          type="com.bignerdranch.android.testpdfreader.view.FragmentPdfMobileViewViewModal" />
    </data>
 
    <androidx.constraintlayout.widget.ConstraintLayout

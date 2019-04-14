@@ -4,9 +4,13 @@ import java.sql.Timestamp;
 
 public interface IMetaData {
 
-    String getState();
+    int getCurrentPage();
 
-    void setState(String state);
+    void setCurrentPage(int currentPage);
+
+    int getItemOnPage();
+
+    void setItemOnPage(int itemOnPage);
 
     Timestamp getTimeLastOpened();
 

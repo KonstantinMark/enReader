@@ -9,8 +9,8 @@ import android.view.View;
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.control.main_fragment.MainFragment;
 import com.bignerdranch.android.testpdfreader.databinding.ActivityMainBinding;
-import com.bignerdranch.android.testpdfreader.model.MessageSchower;
-import com.bignerdranch.android.testpdfreader.model.storage.PermissionManager;
+import com.bignerdranch.android.testpdfreader.model.MessageShower;
+import com.bignerdranch.android.testpdfreader.model.storage.FilePermissionManager;
 import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             Storage storage = Storage.instance(getApplicationContext());
             if (!storage.contains(uri)) {
 
-                PermissionManager permissionManager = new PermissionManager(getApplicationContext());
+                FilePermissionManager permissionManager = new FilePermissionManager(getApplicationContext());
                 permissionManager.grantPermissions(uri);
                 ResourceBuilder builder = new ResourceBuilder(getApplicationContext());
                 IResource resource = builder.buildNew(uri);
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
                 notifyResourceItemAdded(resource);
             } else {
-                MessageSchower.schow(mBinding.getRoot(),
-                        R.string.book_already_added, MessageSchower.DEFAULT);
+                MessageShower.schow(mBinding.getRoot(),
+                        R.string.book_already_added, MessageShower.DEFAULT);
             }
 
         }

@@ -7,4 +7,12 @@ public class MetaDataManager {
         metaData.setTimeLastOpened(new java.sql.Timestamp(new java.util.Date().getTime()));
     }
 
+    public void setLastCurrentPageInformation(IResource resource, int page, int item) {
+        IMetaData metaData = resource.getMetaData();
+        metaData.setCurrentPage(page);
+        metaData.setItemOnPage(item);
+    }
+
+
+
 }

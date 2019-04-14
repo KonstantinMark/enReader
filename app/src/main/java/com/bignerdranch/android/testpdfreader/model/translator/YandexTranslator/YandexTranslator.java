@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bignerdranch.android.testpdfreader.model.errors.translateerrors.ServerError;
-import com.bignerdranch.android.testpdfreader.model.translator.ParagraphTranslateListener;
+import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTranslatedListener;
 import com.bignerdranch.android.testpdfreader.model.translator.Translator;
 import com.bignerdranch.android.testpdfreader.model.translator.WordTranslateListener;
 import com.bignerdranch.android.testpdfreader.model.word.Translation;
@@ -61,7 +61,10 @@ public class YandexTranslator implements Translator {
                         Word wt = YandexJSONParser.get(response);
 
                         if (wt.getWord() == null) {
-                            translatePhrase(word, new WordTranslateListenerWrapper(listener), context);
+                            translatePhrase(
+                                    word,
+                                    new WordTranslatedListenerWrapperOn(listener, word),
+                                    context);
                             return;
                         }
                         listener.translateIsDone(wt);
@@ -80,7 +83,7 @@ public class YandexTranslator implements Translator {
     }
 
     @Override
-    public void translatePhrase(final String paragraph, final ParagraphTranslateListener listener, final Context context) {
+    public void translatePhrase(final String paragraph, final OnParagraphTranslatedListener listener, final Context context) {
         String temp = paragraph.replaceAll(" ", "%20");
         String url = tarnslateRequest(temp);
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(context).getApplicationContext());
@@ -100,7 +103,7 @@ public class YandexTranslator implements Translator {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        listener.translateIsDone(translation);
+                        listener.onParagraphTranslated(translation);
                     }
                 },
                 new Response.ErrorListener() {
@@ -114,20 +117,25 @@ public class YandexTranslator implements Translator {
         queue.add(jsonObjectRequest);
     }
 
-    private class WordTranslateListenerWrapper implements ParagraphTranslateListener {
+    private class WordTranslatedListenerWrapperOn implements OnParagraphTranslatedListener {
 
         private WordTranslateListener mListener;
+        private String mWord;
 
-        public WordTranslateListenerWrapper(WordTranslateListener listener) {
+        public WordTranslatedListenerWrapperOn(WordTranslateListener listener, String word) {
             mListener = listener;
+            mWord = word;
         }
 
         @Override
-        public void translateIsDone(String paragraph) {
+        public void onParagraphTranslated(String paragraph) {
             Word word = new Word();
+            word.setWord(mWord);
+
             Translation translation = new Translation();
             translation.addTranslation(paragraph);
             word.addTranslation(translation);
+
             mListener.translateIsDone(word);
         }
 

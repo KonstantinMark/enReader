@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.bignerdranch.android.testpdfreader.view.item.PdfMobileViewItem" />
+            type="com.bignerdranch.android.testpdfreader.view.item.PdfMobileItemViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

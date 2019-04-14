@@ -3,17 +3,28 @@ package com.bignerdranch.android.testpdfreader.model.storage.resource;
 import java.sql.Timestamp;
 
 public class MetaData implements IMetaData {
-    private String mState = "";
+    private int mCurrentPage;
+    private int mItemOnPage;
     private Timestamp mTime;
 
     @Override
-    public String getState() {
-        return mState;
+    public int getCurrentPage() {
+        return mCurrentPage;
     }
 
     @Override
-    public void setState(String state) {
-        mState = state;
+    public void setCurrentPage(int currentPage) {
+        mCurrentPage = currentPage;
+    }
+
+    @Override
+    public int getItemOnPage() {
+        return mItemOnPage;
+    }
+
+    @Override
+    public void setItemOnPage(int itemOnPage) {
+        mItemOnPage = itemOnPage;
     }
 
     @Override

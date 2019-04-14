@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.bignerdranch.android.testpdfreader.view.TranslationFragmentViewModal" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/translate_group"
         android:layout_width="match_parent"
@@ -29,6 +36,7 @@
             android:layout_marginStart="8dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"
+            android:text="@{viewModel.word}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Word" />
@@ -40,6 +48,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:textSize="14sp"
+            android:text="@{viewModel.transcription}"
             app:layout_constraintEnd_toStartOf="@+id/translate_close"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/t_word"
@@ -54,6 +63,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textSize="14sp"
+            android:text="@{viewModel.translation}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/translate_close"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +78,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="8dp"
             android:indeterminateOnly="true"
+            android:visibility="@{viewModel.animationVisibility}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

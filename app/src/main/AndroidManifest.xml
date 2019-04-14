@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".control.ResourceViewerActivity" />
+        <activity android:name=".control.resource.ResourceViewerActivity" />
     </application>
 
 </manifest>

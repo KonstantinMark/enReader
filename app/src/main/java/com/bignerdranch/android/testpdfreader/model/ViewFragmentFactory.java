@@ -1,25 +1,25 @@
 package com.bignerdranch.android.testpdfreader.model;
 
-import com.bignerdranch.android.testpdfreader.control.content.PdfFullViewFragment;
-import com.bignerdranch.android.testpdfreader.control.content.PdfJsViewFragment;
-import com.bignerdranch.android.testpdfreader.control.content.ResourceReceiverFragment;
-import com.bignerdranch.android.testpdfreader.control.content.pdf_mobile_view.PdfMobileViewFragment;
+import com.bignerdranch.android.testpdfreader.control.resource.ResourceViewFragment;
+import com.bignerdranch.android.testpdfreader.control.resource.view_fragment.MobileViewFragment;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 
 public class ViewFragmentFactory {
 
-    public static ResourceReceiverFragment getFragment(ResourceDescriptor descriptor) {
-        switch (descriptor.getType()) {
-
-            case (ResourceDescriptor.PDF_FULL_TYPE):
-                return PdfFullViewFragment.newInstance(descriptor.getDescription());
-            case (ResourceDescriptor.PDF_JS_TYPE):
-                return PdfJsViewFragment.newInstance(descriptor.getDescription());
-            case (ResourceDescriptor.PDF_MOBILE_TYPE):
-                return PdfMobileViewFragment.newInstance(descriptor.getDescription());
-
-            default:
-                return PdfFullViewFragment.newInstance( descriptor.getDescription());
-        }
+    public static ResourceViewFragment getFragment(IResource resource) {
+        return MobileViewFragment.config(resource.getUri(), new MobileViewFragment());
+//        switch (descriptor.getType()) {
+//
+//            case (ResourceDescriptor.PDF_FULL_TYPE):
+//                return PdfFullViewFragment.config(descriptor.getDescription());
+//            case (ResourceDescriptor.PDF_JS_TYPE):
+//                return PdfJsViewFragment.config(descriptor.getDescription());
+//            case (ResourceDescriptor.PDF_MOBILE_TYPE):
+//                return MobileViewFragment.config(descriptor.getDescription());
+//
+//            default:
+//                return PdfFullViewFragment.config( descriptor.getDescription());
+//        }
     }
 
 }

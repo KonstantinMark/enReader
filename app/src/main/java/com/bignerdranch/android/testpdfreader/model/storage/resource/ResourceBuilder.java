@@ -29,6 +29,7 @@ public class ResourceBuilder {
 
         MetaDataManager metaDataManager = new MetaDataManager();
         metaDataManager.setLastOpenedDateCurrent(resource);
+        metaDataManager.setLastCurrentPageInformation(resource, 0, 0);
 
         return resource;
     }
@@ -44,7 +45,8 @@ public class ResourceBuilder {
         new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
 
         metaData.setTimeLastOpened(cursor.getTime());
-        metaData.setState(cursor.getState());
+        metaData.setCurrentPage(cursor.getCurrentPage());
+        metaData.setItemOnPage(cursor.getScrollOnPage());
 
         return resource;
     }

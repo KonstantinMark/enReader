@@ -20,7 +20,8 @@ public class BookBaseHelper extends SQLiteOpenHelper {
                 "_id integer primary key autoincrement, " +
                         BookDbSchema.BookTable.Cols.URI + "," +
                         BookDbSchema.BookTable.Cols.TYPE + "," +
-                        BookDbSchema.BookTable.Cols.STATE + "," +
+                        BookDbSchema.BookTable.Cols.CURRENT_PAGE + "," +
+                        BookDbSchema.BookTable.Cols.ITEM_ON_PAGE + "," +
                         BookDbSchema.BookTable.Cols.DATE_LAST_OPENED +
                         ")"
                 );
