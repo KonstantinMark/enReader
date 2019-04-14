@@ -14,6 +14,8 @@ import com.bignerdranch.android.testpdfreader.model.storage.FilePermissionManage
 import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceInformation;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,11 +55,22 @@ public class MainActivity extends AppCompatActivity {
 
                 FilePermissionManager permissionManager = new FilePermissionManager(getApplicationContext());
                 permissionManager.grantPermissions(uri);
+
                 ResourceBuilder builder = new ResourceBuilder(getApplicationContext());
                 IResource resource = builder.buildNew(uri);
-                Storage.instance(getApplicationContext()).add(resource);
 
-                notifyResourceItemAdded(resource);
+                if(resource.getType() != ResourceType.UNDEFINE){
+                    Storage.instance(getApplicationContext()).add(resource);
+                    notifyResourceItemAdded(resource);
+                } else {
+                    String extension = new ResourceInformation(getApplicationContext())
+                            .getResourceExpansion(resource.getUri());
+
+                    MessageShower.schow(mBinding.getRoot(),
+                            getResources().getString(R.string.resource_type_undefined) + " " + extension,
+                            MessageShower.DEFAULT);
+                }
+
             } else {
                 MessageShower.schow(mBinding.getRoot(),
                         R.string.book_already_added, MessageShower.DEFAULT);

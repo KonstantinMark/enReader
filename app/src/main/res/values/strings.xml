@@ -2,6 +2,7 @@
     <string name="app_name">EnReader0.1</string>
 
     <string name="book_already_added">Book already added</string>
+    <string name="resource_type_undefined">Формар не поддерживается</string>
     <string name="word_not_found">Неудалось перевести слово</string>
     <string name="list_item_book__context_menu__delete_title">Delete</string>
     <string name="delete">Удалить</string>

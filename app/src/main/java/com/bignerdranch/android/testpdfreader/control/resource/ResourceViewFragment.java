@@ -3,6 +3,8 @@ package com.bignerdranch.android.testpdfreader.control.resource;
 import android.net.Uri;
 import android.os.Bundle;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -39,7 +41,7 @@ public abstract class ResourceViewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mResourceUri = Uri.parse(getArguments().getString(ARG_URL));
+        mResourceUri = Uri.parse(Objects.requireNonNull(getArguments()).getString(ARG_URL));
     }
 
     protected Uri getResourceUri() {

@@ -36,9 +36,7 @@ public abstract class AbstractActivityWithPermissions extends AppCompatActivity 
     }
 
     private void requestInternetPermission(String p, int r) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, p)) {
-
-        }
+        ActivityCompat.shouldShowRequestPermissionRationale(this, p);
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, r);
     }

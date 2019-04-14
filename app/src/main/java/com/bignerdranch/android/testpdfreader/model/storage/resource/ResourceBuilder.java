@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.bignerdranch.android.testpdfreader.model.storage.db.BookCursorWrapper;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.img.ResourceImgFactory;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceInformation;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
 
 public class ResourceBuilder {
 
@@ -22,10 +23,10 @@ public class ResourceBuilder {
         resource.setUri(uri);
         resource.setName(mResourceInformation.getResourceName(uri));
         resource.setType(mResourceInformation.identifyType(uri));
+
         new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
 
-        MetaData metaData = new MetaData();
-        resource.setMetaData(metaData);
+        resource.setMetaData(new MetaData());
 
         MetaDataManager metaDataManager = new MetaDataManager();
         metaDataManager.setLastOpenedDateCurrent(resource);

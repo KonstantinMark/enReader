@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -82,8 +84,7 @@ public class Resource implements IResource {
     }
 
     @Override
-    public int compareTo(IResource o) {
-        if (o == null) return 1;
+    public int compareTo(@NotNull IResource o) {
         Timestamp my = getMetaData() != null ? getMetaData().getTimeLastOpened() : null;
         Timestamp his = o.getMetaData() != null ? o.getMetaData().getTimeLastOpened() : null;
         if (my != null) return my.compareTo(his);

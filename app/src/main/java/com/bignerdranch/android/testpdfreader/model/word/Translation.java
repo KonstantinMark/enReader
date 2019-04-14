@@ -1,5 +1,7 @@
 package com.bignerdranch.android.testpdfreader.model.word;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class Translation implements Serializable {
         mWordTranslations.add(wordTranslation);
     }
 
+    @NotNull
     @Override
     public String toString() {
 
@@ -35,8 +38,7 @@ public class Translation implements Serializable {
 
         for (String s : mWordTranslations) {
 
-            if (result.length() == 0) {
-            } else {
+            if (result.length() != 0){
                 result.append(", ");
             }
 

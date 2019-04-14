@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.control.AbstractActivityWithPermissions;
@@ -17,6 +18,7 @@ import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTransl
 import com.bignerdranch.android.testpdfreader.model.translator.Translator;
 import com.bignerdranch.android.testpdfreader.model.translator.TranslatorFactory;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -29,28 +31,49 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
     private Translator mTranslator;
     private TranslateFragment mTranslateFragment;
     private ResourceViewFragment mContentFragment;
+    private Uri mResourceUri;
 
     public ResourceViewerActivity() {
+        Log.i("MY_TAG", "ResourceViewerActivity");
         TranslatorFactory translatorFactory = new TranslatorFactory();
         mTranslator = translatorFactory.newInstance();
     }
 
     public static Intent newIntent(Context packageContext, IResource resource) {
+        Log.i("MY_TAG", "newIntent");
         Intent intent = new Intent(packageContext, ResourceViewerActivity.class);
         intent.putExtra(EXTRA_RESOURCE_URI, resource.getUri().toString());
         return intent;
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(EXTRA_RESOURCE_URI, mResourceUri.toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null){
+            mResourceUri = Uri.parse(savedInstanceState.getString(EXTRA_RESOURCE_URI));
+        }
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("MY_TAG", "onCreate");
         setContentView(R.layout.activity_book_viewer);
+
+        mResourceUri = Uri.parse(getIntent().getStringExtra(EXTRA_RESOURCE_URI));
 
         FragmentManager fm = getSupportFragmentManager();
 
         if (!containsResourceViewFragment(fm)) {
             setResourceViewFragment(fm);
         }
+        Log.i("MY_TAG", "onCreate...");
     }
 
     private boolean containsResourceViewFragment(FragmentManager fm) {
@@ -60,9 +83,9 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
     }
 
     private void setResourceViewFragment(FragmentManager fm) {
-        Uri resourceUri = Uri.parse(getIntent().getStringExtra(EXTRA_RESOURCE_URI));
+        Log.i("MY_TAG", "setResourceViewFragment");
         Storage storage = Storage.instance(getApplicationContext());
-        IResource resource = storage.get(resourceUri);
+        IResource resource = storage.get(mResourceUri);
 
         ResourceViewFragment fragment = ViewFragmentFactory.getFragment(resource);
 
@@ -71,6 +94,7 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
                 .commit();
 
         mContentFragment = fragment;
+        Log.i("MY_TAG", "setResourceViewFragment...");
     }
 
     @Override

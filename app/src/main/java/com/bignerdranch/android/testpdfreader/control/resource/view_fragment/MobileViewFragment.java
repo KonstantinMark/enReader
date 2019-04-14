@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +79,7 @@ public class MobileViewFragment extends ResourceViewFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i("MY_TAG", "Mobile_onCreateView");
         mBinding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_pdf_mobile_view,
                         container, false);
@@ -89,12 +92,13 @@ public class MobileViewFragment extends ResourceViewFragment {
         mResource = storage.get(getResourceUri());
         mResourceMetaData = mResource.getMetaData();
 
-        final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        final FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         mFragmentStatePagerAdapter = new FragmentStatePagerAdapterImpl(fragmentManager);
         mBinding.fragmentPdfMobileViewViewPager.setAdapter(mFragmentStatePagerAdapter);
 
         createResourceLoader();
 
+        Log.i("MY_TAG", "Mobile_onCreateView...");
         return mBinding.getRoot();
     }
 
@@ -134,7 +138,7 @@ public class MobileViewFragment extends ResourceViewFragment {
     }
 
     private void onResourceLoadingError(IOException e) {
-        Snackbar.make(getView(),
+        Snackbar.make(Objects.requireNonNull(getView()),
                 getResources().getString(R.string.resource_loading_error)
                         + "\n" + e.toString(),
                 Snackbar.LENGTH_LONG).show();

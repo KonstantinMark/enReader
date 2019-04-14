@@ -36,7 +36,7 @@ public class ResourceInformation {
                     name = name.substring(name.lastIndexOf('.') + 1);
                 }
             }
-            return name != null ? name.toUpperCase() : name;
+            return name != null ? name.toUpperCase() : null;
         }
     }
 
@@ -54,7 +54,9 @@ public class ResourceInformation {
                 }
             }
         } finally {
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
         return name;

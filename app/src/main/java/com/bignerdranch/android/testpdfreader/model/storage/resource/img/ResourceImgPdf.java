@@ -10,6 +10,7 @@ import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 public class ResourceImgPdf implements IResourceImg {
 
@@ -24,8 +25,8 @@ public class ResourceImgPdf implements IResourceImg {
         Bitmap bitmap = null;
             try (ParcelFileDescriptor descriptor =
                          mContext.getContentResolver().openFileDescriptor(resource.getUri(), "r");
-                 PdfRenderer renderer = new PdfRenderer(descriptor);
-                 PdfRenderer.Page page = renderer.openPage(0);
+                 PdfRenderer renderer = new PdfRenderer(Objects.requireNonNull(descriptor));
+                 PdfRenderer.Page page = renderer.openPage(0)
             ) {
 
                 bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888);

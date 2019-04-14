@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 public class PdfReaderCreator {
     private Context mContext;
@@ -31,7 +32,7 @@ public class PdfReaderCreator {
         ParcelFileDescriptor parcelFileDescriptor =
                 mContext.getContentResolver().openFileDescriptor(uri, "r");
 
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        FileDescriptor fileDescriptor = Objects.requireNonNull(parcelFileDescriptor).getFileDescriptor();
         FileInputStream stream = new FileInputStream(fileDescriptor);
 
         return new PdfReader(stream);

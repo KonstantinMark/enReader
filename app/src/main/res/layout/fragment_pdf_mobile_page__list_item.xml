@@ -21,14 +21,16 @@
             android:id="@+id/fragment_pdf_mobile_page__label_container"
             android:layout_width="10dp"
             android:layout_height="10dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/fragment_pdf_mobile_page__label"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_label_black_24dp"
                 android:visibility="@{viewModel.labelVisibility}" />
 
@@ -83,6 +85,7 @@
             android:layout_width="25dp"
             android:layout_height="0dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

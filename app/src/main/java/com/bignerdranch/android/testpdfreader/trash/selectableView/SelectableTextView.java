@@ -973,23 +973,23 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
 		 *
 		 * @param v the view the cursor belongs to
 		 */
-		public void onHideCursors(View v);
+        void onHideCursors(View v);
 
 		/**
 		 * What to do when the cursors show
 		 *
 		 * @param v the view the cursor belongs to
 		 */
-		public void onShowCursors(View v);
+        void onShowCursors(View v);
 
 		/**
 		 * What to do when the drag begins
 		 *
 		 * @param v the view the cursor belongs to
 		 */
-		public void onDragStarts(View v);
+        void onDragStarts(View v);
 
-		public void onPositionChanged(View v, int x, int y, int oldx, int oldy);
+		void onPositionChanged(View v, int x, int y, int oldx, int oldy);
 	}
 
 }

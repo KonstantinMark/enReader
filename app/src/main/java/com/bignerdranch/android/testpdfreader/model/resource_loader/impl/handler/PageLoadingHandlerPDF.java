@@ -3,6 +3,7 @@ package com.bignerdranch.android.testpdfreader.model.resource_loader.impl.handle
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 
 import com.bignerdranch.android.testpdfreader.model.resource_loader.OnPageLoadedListener;
 import com.bignerdranch.android.testpdfreader.model.resource_loader.impl.PageLoadingHandler;
@@ -22,6 +23,7 @@ public class PageLoadingHandlerPDF<T extends OnPageLoadedListener> extends PageL
 
     public PageLoadingHandlerPDF(Handler handler, Context context, Uri uri) throws IOException {
         super(handler);
+        Log.i("MY_TAG", "PageLoadingHandlerPDF");
         mContext = context;
         PdfReaderCreator pdfReaderCreator = new PdfReaderCreator(mContext, uri);
         mReader = pdfReaderCreator.getPdfReader();

@@ -18,6 +18,7 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -68,7 +69,7 @@ public class ParagraphListFragment extends Fragment {
             if(data != null){
                 Uri uriPdf = data.getData();
                 getActivity().grantUriPermission(
-                        getActivity().getPackageName(),
+                        Objects.requireNonNull(getActivity()).getPackageName(),
                         uriPdf,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION
                 );
@@ -80,12 +81,12 @@ public class ParagraphListFragment extends Fragment {
     private String readFile(){
         Log.i(TAG, "readFile");
         String fileNamePdf = "Tools of Titans.pdf";
-        try (InputStream isPdf = getActivity().getAssets().open(fileNamePdf)) {
+        try (InputStream isPdf = Objects.requireNonNull(getActivity()).getAssets().open(fileNamePdf)) {
             PdfReader reader = new PdfReader(isPdf);
 
             PdfReaderContentParser parser = new PdfReaderContentParser(reader);
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             TextExtractionStrategy strategy;
             for (int i = 1; i <= reader.getNumberOfPages(); i++) {
                 strategy = parser.processContent(i, new SimpleTextExtractionStrategy());

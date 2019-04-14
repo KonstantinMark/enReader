@@ -65,7 +65,7 @@ public class PdfJsViewFragment extends ResourceViewFragment {
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
-        };
+        }
     }
 
 

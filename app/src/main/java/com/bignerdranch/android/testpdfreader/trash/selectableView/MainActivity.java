@@ -1,5 +1,6 @@
 package com.bignerdranch.android.testpdfreader.trash.selectableView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ public class MainActivity extends Activity {
 	private int mTouchY;
 	private final static int DEFAULT_SELECTION_LEN = 5;
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,7 +42,8 @@ public class MainActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				mTouchX = (int) event.getX();
 				mTouchY = (int) event.getY();
-				return false;
+				v.performClick();
+				return true;
 			}
 		});
 	}

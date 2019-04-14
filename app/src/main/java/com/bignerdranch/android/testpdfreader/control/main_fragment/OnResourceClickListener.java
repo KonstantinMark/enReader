@@ -3,6 +3,7 @@ package com.bignerdranch.android.testpdfreader.control.main_fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 
 import com.bignerdranch.android.testpdfreader.control.resource.ResourceViewerActivity;
@@ -26,13 +27,14 @@ public class OnResourceClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Log.i("MY_TAG", "onClick");
         setResourceDateOpenedNow();
-
         Intent i = ResourceViewerActivity.newIntent(
                 mContext,
                 mResource
         );
         mContext.startActivity(i);
+        Log.i("MY_TAG", "startActivity");
     }
 
     private void setResourceDateOpenedNow() {

@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,8 @@ import com.bignerdranch.android.testpdfreader.model.tools.marker.MarkerIntentLis
 import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTranslatedListener;
 import com.bignerdranch.android.testpdfreader.view.PdfMobilePageFragmentViewModel;
 import com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItemViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
     private FragmentPdfMobilePageBinding mBinding;
     private PdfMobilePageFragmentViewModel mViewModel;
     private PageFragmentAdapter mAdapter;
-    private ArrayList<String> mContent = new ArrayList<>();
+    private ArrayList<PageFragmentItemWrapper> mContent = new ArrayList<>();
     private int mCurrentItem;
     private int mCurrentPage;
 
@@ -89,7 +90,8 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(ARG_CURRENT_ITEM);
             mCurrentPage = savedInstanceState.getInt(ARG_CURRENT_PAGE);
-            mContent = (ArrayList<String>) savedInstanceState.getSerializable(ARG_CONTENT);
+            mContent = (ArrayList<PageFragmentItemWrapper>)
+                    savedInstanceState.getSerializable(ARG_CONTENT);
             updateUI();
             closeAnimation();
         }
@@ -97,7 +99,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         mITextSelectionListener = (ITextSelectionListener) context;
     }
@@ -117,6 +119,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         mViewModel = new PdfMobilePageFragmentViewModel();
         mBinding.setViewModel(mViewModel);
 
+        assert getArguments() != null;
         mCurrentItem = getArguments().getInt(ARG_CURRENT_ITEM);
         mCurrentPage = getArguments().getInt(ARG_CURRENT_PAGE);
 
@@ -140,6 +143,14 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         }
     }
 
+    private List<PageFragmentItemWrapper> wrap(List<String> list){
+        List<PageFragmentItemWrapper> wrappers = new ArrayList<>();
+        for (String s: list){
+            wrappers.add(new PageFragmentItemWrapper(s));
+        }
+        return wrappers;
+    }
+
     private void notifyTextSelected(String text, TextSelector listener) {
         mITextSelectionListener.wordSelected(text, listener);
 
@@ -160,8 +171,15 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 
     public void setContent(List<String> content) {
         mContent = new ArrayList<>();
-        if (content != null) mContent.addAll(content);
+        if (content != null) mContent.addAll(wrap(content));
+
+        if(mCurrentItem!= -1){
+            PageFragmentItemWrapper wrapper = mContent.get(mCurrentItem);
+            if(wrapper!= null) wrapper.setMarker(true);
+        }
+
         updateUI();
+
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {
             @Override
@@ -202,22 +220,21 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
             );
         }
 
-        public void bind(String content) {
-            Log.i(TAG, mCurrentPage + ":   " + mCurrentItem + " == " + getAdapterPosition());
+        public void bind(PageFragmentItemWrapper content) {
             if (mMarker != null) {
-                mMarker.setVisibility(false);
-                mMarker.valid = false;
+                mMarker.setInvalid();
                 mCurrentItem = mMarker.getPageElementIndex();
             }
+            mBinding.getViewModel().setLabelVisibility(false);
 
             mMarker = new MarkerFragmentResourceItemImpl(mBinding, mCurrentPage,
-                    getAdapterPosition());
+                    getAdapterPosition(), content);
 
-            if (mCurrentItem == getAdapterPosition()) {
+            if (content.isMarker()) {
                 newMarkerIntent(mMarker);
-                mCurrentItem = -1;
             }
-            mBinding.getViewModel().setContent(content);
+
+            mBinding.getViewModel().setContent(content.getContent());
         }
 
         @Override
@@ -319,14 +336,14 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 
     private class PageFragmentAdapter extends RecyclerView.Adapter<PageFragmentHolder> {
 
-        private List<String> items;
+        private List<PageFragmentItemWrapper> items;
         public int currentMarker = -1;
 
-        public PageFragmentAdapter(List<String> items) {
+        public PageFragmentAdapter(List<PageFragmentItemWrapper> items) {
             this.items = items;
         }
 
-        public void setContent(List<String> items) {
+        public void setContent(List<PageFragmentItemWrapper> items) {
             this.items = items;
         }
 

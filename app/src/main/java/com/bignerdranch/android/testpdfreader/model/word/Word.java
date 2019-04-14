@@ -1,5 +1,7 @@
 package com.bignerdranch.android.testpdfreader.model.word;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,10 +47,11 @@ public class Word implements Serializable {
         return mTranslations;
     }
 
+    @NotNull
     @Override
     public String toString() {
 
-        if (getWord() == null) return null;
+        if (getWord() == null) return "";
 
         StringBuilder resp = new StringBuilder(getWord());
 
