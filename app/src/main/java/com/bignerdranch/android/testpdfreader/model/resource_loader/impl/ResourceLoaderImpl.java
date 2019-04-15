@@ -2,6 +2,7 @@ package com.bignerdranch.android.testpdfreader.model.resource_loader.impl;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Looper;
 import android.util.Log;
 
 import com.bignerdranch.android.testpdfreader.model.resource_loader.OnPageLoadedListener;
@@ -9,32 +10,35 @@ import com.bignerdranch.android.testpdfreader.model.resource_loader.ResourceLoad
 import com.bignerdranch.android.testpdfreader.model.resource_loader.impl.handler.PageLoadingHandlerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
-public class ResourceLoaderImpl implements ResourceLoader {
+import android.os.Handler;
+
+public class ResourceLoaderImpl implements ResourceLoader,
+        PageLoadingHandler.OnLoadedListener<OnPageLoadedListener> {
 
     private PageLoadingHandler<OnPageLoadedListener> mPageLoadingHandler;
 
-    public ResourceLoaderImpl(Uri uri, Context context) throws IOException {
-        Log.i("MY_TAG", "ResourceLoaderImpl");
+    public ResourceLoaderImpl(Uri uri, Context context, Handler handler) throws IOException {
         PageLoadingHandlerFactory factory = new PageLoadingHandlerFactory(context);
-        Log.i("MY_TAG", "ResourceLoaderImpl_1");
-        mPageLoadingHandler = factory.newInstance(uri);
-        Log.i("MY_TAG", "ResourceLoaderImpl_1...");
+
+        mPageLoadingHandler = factory.newInstance(uri, handler, this);
         if(mPageLoadingHandler == null) {
-            Log.i("MY_TAG", "ResourceLoaderImpl_1...Error");
-            throw  new IOException("Format of ResourceLoaderImpl not defined");
+            throw new IOException("Format of ResourceLoaderImpl not defined");
         }
-        Log.i("MY_TAG", "ResourceLoaderImpl_2");
-        mPageLoadingHandler.start();
-        Log.i("MY_TAG", "ResourceLoaderImpl_3");
-        mPageLoadingHandler.getLooper();
-        Log.i("MY_TAG", "ResourceLoaderImpl...");
+
     }
 
     @Override
     public void close() {
         mPageLoadingHandler.quit();
         mPageLoadingHandler.clearQueue();
+    }
+
+    @Override
+    public void start() {
+        mPageLoadingHandler.start();
+        mPageLoadingHandler.getLooper();
     }
 
     @Override
@@ -45,5 +49,12 @@ public class ResourceLoaderImpl implements ResourceLoader {
     @Override
     public void loadPage(int page, OnPageLoadedListener loadListener) {
         mPageLoadingHandler.addToQueue(loadListener, page);
+    }
+
+    @Override
+    public void onLoaded(OnPageLoadedListener target, List<String> result) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = () -> target.onLoaded(result);
+        handler.postDelayed(runnable, 0);
     }
 }

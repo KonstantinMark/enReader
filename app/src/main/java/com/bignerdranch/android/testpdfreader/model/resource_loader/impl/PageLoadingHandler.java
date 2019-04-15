@@ -16,13 +16,23 @@ public abstract class PageLoadingHandler<T extends OnPageLoadedListener> extends
     private static final String TAG = "PageLoadingHandler";
     private static final int MESSAGE_LOAD = 0;
 
+    public interface OnLoadedListener<T>{
+        void onLoaded(T target, final List<String> result);
+    }
 
     private Handler mRequestHandler;
     private ConcurrentMap<T, Integer> mRequestMap = new ConcurrentHashMap<>();
+    private OnLoadedListener<T> mLoadedListener;
 
-    public PageLoadingHandler(Handler handler) {
+    public PageLoadingHandler(Handler handler, OnLoadedListener<T> listener) {
         super(TAG);
         mRequestHandler = handler;
+        mLoadedListener = listener;
+    }
+
+    protected void onLoaded(T target, final List<String> result){
+        if(mLoadedListener != null)
+            mLoadedListener.onLoaded(target, result);
     }
 
     protected Integer getRequest(T target) {
@@ -50,7 +60,8 @@ public abstract class PageLoadingHandler<T extends OnPageLoadedListener> extends
             public void handleMessage(Message msg) {
                 if (msg.what == MESSAGE_LOAD) {
                     T target = (T) msg.obj;
-                    handleRequest(target, getRequest(target));
+                    if(target.dataStillNeeded())
+                        handleRequest(target, getRequest(target));
                     mRequestMap.remove(target);
                 }
             }
@@ -70,18 +81,6 @@ public abstract class PageLoadingHandler<T extends OnPageLoadedListener> extends
     public void clearQueue() {
         mRequestHandler.removeMessages(MESSAGE_LOAD);
         mRequestMap.clear();
-    }
-
-    protected void onLoaded(final T target, final List<String> result) {
-        removeRequest(target);
-        Handler handler = new Handler(Looper.getMainLooper());
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                target.onLoaded(result);
-            }
-        };
-        handler.postDelayed(runnable, 0);
     }
 
     protected abstract void handleRequest(final T target, Integer index);

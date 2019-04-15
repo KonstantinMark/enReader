@@ -1,11 +1,13 @@
 package com.bignerdranch.android.testpdfreader.control.resource.view_fragment.mobile_view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,6 +171,20 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         setContent(content);
     }
 
+
+    private boolean isDataNeeded = true;
+    @Override
+    public boolean dataStillNeeded() {
+        return isDataNeeded;
+    }
+
+    @Override
+    public void onPause() {
+        isDataNeeded = false;
+        super.onPause();
+    }
+
+
     public void setContent(List<String> content) {
         mContent = new ArrayList<>();
         if (content != null) mContent.addAll(wrap(content));
@@ -181,13 +197,8 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         updateUI();
 
         Handler handler = new Handler(Looper.getMainLooper());
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                closeAnimation();
-            }
-        };
-        handler.postDelayed(runnable, 2000);
+
+        handler.postDelayed(this::closeAnimation, 1000);
     }
 
     private void closeAnimation() {
@@ -370,4 +381,5 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
             return items.size();
         }
     }
+
 }

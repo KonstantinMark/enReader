@@ -6,4 +6,6 @@ public interface OnPageLoadedListener {
 
     void onLoaded(List<String> content);
 
+    boolean dataStillNeeded();
+
 }

@@ -21,19 +21,14 @@ public class PageLoadingHandlerFactory {
         mContext = context;
     }
 
-    public <T extends OnPageLoadedListener> PageLoadingHandler<T> newInstance(Uri uri) throws IOException {
-        Log.i("MY_TAG", "PageLoadingHandler__newInstance " + (mContext!=null));
+    public <T extends OnPageLoadedListener> PageLoadingHandler<T>
+    newInstance(Uri uri, Handler handler, PageLoadingHandler.OnLoadedListener<T> listener) throws IOException {
         Storage storage = Storage.instance(mContext);
-        Log.i("MY_TAG", "PageLoadingHandler__newInstance_stor");
         IResource resource = storage.get(uri);
-
-        Log.i("MY_TAG", "PageLoadingHandler__newInstance...");
-
-        Handler handler = new Handler(Looper.getMainLooper());
         if (resource != null) {
             switch (resource.getType()) {
                 case PDF:
-                    return new PageLoadingHandlerPDF<T>(handler, mContext, uri);
+                    return new PageLoadingHandlerPDF<T>(handler, listener, mContext, uri);
                 default:
                     return null;
             }

@@ -51,6 +51,7 @@ public class MobileViewFragment extends ResourceViewFragment {
     private IMetaData mResourceMetaData;
 
     private MarkerManager mMarkerManager;
+    private ResourceLoader mResourceLoader;
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -97,44 +98,27 @@ public class MobileViewFragment extends ResourceViewFragment {
         mBinding.fragmentPdfMobileViewViewPager.setAdapter(mFragmentStatePagerAdapter);
 
         createResourceLoader();
-
-        Log.i("MY_TAG", "Mobile_onCreateView...");
         return mBinding.getRoot();
     }
 
     private void createResourceLoader() {
-        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
+        Handler handler = new Handler();
+
+        Runnable runnable = () ->{
                 final ResourceLoader loader;
                 try {
-                    loader = new ResourceLoaderImpl(getResourceUri(), getContext());
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    final Runnable changeView = new Runnable() {
-                        public void run() {
-                            resourceLoaderCreated(loader);
-                        }
-                    };
-                    handler.postDelayed(changeView, 0);
-
+                    loader = new ResourceLoaderImpl(getResourceUri(), getContext(), handler);
+                    loader.start();
+                    new Handler(Looper.getMainLooper()).postDelayed(
+                            () -> resourceLoaderCreated(loader), 0);
 
                 } catch (final IOException e) {
                     e.printStackTrace();
-
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            onResourceLoadingError(e);
-                        }
-                    };
-                    handler.postDelayed(runnable, 0);
+                    new Handler(Looper.getMainLooper())
+                            .postDelayed(() -> onResourceLoadingError(e), 0);
                 }
-
-                return null;
-            }
-        };
-        asyncTask.execute();
+            };
+        AsyncTask.execute(runnable);
     }
 
     private void onResourceLoadingError(IOException e) {
@@ -215,6 +199,18 @@ public class MobileViewFragment extends ResourceViewFragment {
         @Override
         public int getCount() {
             return mPageLoader != null ? mPageLoader.getPagesCount() : 0;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mResourceLoader!=null) {
+            try {
+                mResourceLoader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
