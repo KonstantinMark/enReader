@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.ui.main_fragment;
+package com.bignerdranch.android.testpdfreader.ui.resources_list;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -15,12 +15,12 @@ import com.google.android.material.snackbar.Snackbar;
 public class OnResourceDeleteListener implements View.OnClickListener {
 
     private Context mContext;
-    private MainFragment.ResourceAdapter mAdapter;
+    private ResourceAdapter mAdapter;
     private int mPosition;
     private Resource mResource;
     private View mView;
 
-    public OnResourceDeleteListener(Context context, MainFragment.ResourceAdapter adapter, int position, Resource resource, View view) {
+    public OnResourceDeleteListener(Context context, ResourceAdapter adapter, int position, Resource resource, View view) {
         mContext = context;
         mAdapter = adapter;
         mPosition = position;
@@ -66,8 +66,8 @@ public class OnResourceDeleteListener implements View.OnClickListener {
             AsyncTask.execute(runnable1);
 
             Handler handler = new Handler(Looper.getMainLooper());
-            Runnable runnable = () -> mAdapter.addItem(resource, position);
-            handler.postDelayed(runnable, 0);
+//            Runnable runnable = () -> mAdapter.addItem(resource, position);
+//            handler.postDelayed(runnable, 0);
         }
     }
 }

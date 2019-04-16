@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.ui.main_fragment;
+package com.bignerdranch.android.testpdfreader.ui.resources_list;
 
 import android.content.Context;
 import android.content.Intent;

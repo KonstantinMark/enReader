@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.bignerdranch.android.testpdfreader.view.item.ResourceItemViewModel" />
+            name="resource"
+            type="com.bignerdranch.android.testpdfreader.db.entry.Resource" />
     </data>
 
 
@@ -75,7 +75,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@{viewModel.img}"
                     app:layout_constraintBottom_toTopOf="@+id/divider"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -89,7 +88,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{viewModel.name}"
+                    android:text="@{resource.name}"
                     android:textAlignment="textStart"
                     android:textColor="@color/list_item_resource_text_color"
                     android:textSize="16sp"

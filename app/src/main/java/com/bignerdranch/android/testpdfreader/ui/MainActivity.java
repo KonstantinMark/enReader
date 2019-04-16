@@ -15,7 +15,7 @@ import com.bignerdranch.android.testpdfreader.model.storage.FilePermissionManage
 import com.bignerdranch.android.testpdfreader.model.storage.resource.MetaDataManager;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
 import com.bignerdranch.android.testpdfreader.model.tools.MessageShower;
-import com.bignerdranch.android.testpdfreader.ui.main_fragment.MainFragment;
+import com.bignerdranch.android.testpdfreader.ui.resources_list.ResourcesFragment;
 import com.bignerdranch.android.testpdfreader.databinding.ActivityMainBinding;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment f = fm.findFragmentById(R.id.fragment_container);
 
         if(f == null){
-            f = MainFragment.newInstance();
+            f = ResourcesFragment.newInstance();
             fm.beginTransaction()
                     .add(R.id.fragment_container, f)
                     .commit();

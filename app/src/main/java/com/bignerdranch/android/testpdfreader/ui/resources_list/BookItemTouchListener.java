@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.ui.main_fragment;
+package com.bignerdranch.android.testpdfreader.ui.resources_list;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,15 +8,15 @@ import android.view.View;
 import com.bignerdranch.android.testpdfreader.R;
 
 public class BookItemTouchListener implements View.OnTouchListener {
-    MainFragment.ResourceAdapter mAdapter;
+    ResourceAdapter mAdapter;
     boolean movedBeforeUp = false;
     Float moveStart;
     private String TAG = "BookItemTouchListener";
-    private MainFragment.ResourceHolder mHolder;
+    private ResourceAdapter.ResourceHolder mHolder;
     private float mBackgroundWidth;
     private Context mContext;
 
-    public BookItemTouchListener(MainFragment.ResourceHolder holder, MainFragment.ResourceAdapter adapter, Context context) {
+    public BookItemTouchListener(ResourceAdapter.ResourceHolder holder, ResourceAdapter adapter, Context context) {
         mHolder = holder;
         mAdapter = adapter;
         mContext = context;
@@ -24,7 +24,7 @@ public class BookItemTouchListener implements View.OnTouchListener {
     }
 
     public void refresh() {
-        mBackgroundWidth = mHolder.mBinding.listItemBookBackground.getWidth();
+        mBackgroundWidth = mHolder.binding.listItemBookBackground.getWidth();
         setDefault();
     }
 
@@ -43,7 +43,7 @@ public class BookItemTouchListener implements View.OnTouchListener {
     }
 
     private boolean setOnAfterDownListener(View v, final MotionEvent event) {
-        mHolder.mBinding.listItemBookForeground.setOnTouchListener(new View.OnTouchListener() {
+        mHolder.binding.listItemBookForeground.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -68,21 +68,21 @@ public class BookItemTouchListener implements View.OnTouchListener {
     }
 
     private void setSelectionBackground() {
-        mHolder.mBinding.listItemBookForeground.setBackgroundColor(mContext.getResources().getColor(R.color.listBookElementBackground_selected));
+        mHolder.binding.listItemBookForeground.setBackgroundColor(mContext.getResources().getColor(R.color.listBookElementBackground_selected));
     }
 
     private void setDefaultBackground() {
-        mHolder.mBinding.listItemBookForeground.setBackgroundColor(mContext.getResources().getColor(R.color.listBookElementBackground));
+        mHolder.binding.listItemBookForeground.setBackgroundColor(mContext.getResources().getColor(R.color.listBookElementBackground));
     }
 
     private boolean onMove(View v, final MotionEvent event) {
         //setDefaultBackground();
-        mAdapter.changCurrentInDeleteMod(mHolder);
+//        mAdapter.changCurrentInDeleteMod(mHolder);
         movedBeforeUp = true;
         if (moveStart == null) moveStart = event.getRawX();
         float dX = moveStart - event.getRawX();
         if (-dX < 0)
-            mHolder.mBinding.listItemBookForeground.setX(-dX);
+            mHolder.binding.listItemBookForeground.setX(-dX);
         return true;
     }
 
@@ -108,22 +108,22 @@ public class BookItemTouchListener implements View.OnTouchListener {
     private void setDeleteBtnVisibleState() {
         moveStart = null;
         movedBeforeUp = false;
-        mHolder.setListeners();
-        mHolder.mBinding.listItemBookForeground.setOnClickListener(new View.OnClickListener() {
+//        mHolder.setListeners();
+        mHolder.binding.listItemBookForeground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDeleteBtnInvisibleState();
             }
         });
-        mAdapter.changCurrentInDeleteMod(mHolder);
-        mHolder.mBinding.listItemBookForeground.animate().translationX(-getBackgroundWidth());
+//        mAdapter.changCurrentInDeleteMod(mHolder);
+        mHolder.binding.listItemBookForeground.animate().translationX(-getBackgroundWidth());
 
     }
 
     private void setDeleteBtnInvisibleState() {
-        mHolder.setListeners();
-        mAdapter.forgetMe(mHolder);
-        mHolder.mBinding.listItemBookForeground.animate().translationX(0);
+//        mHolder.setListeners();
+//        mAdapter.forgetMe(mHolder);
+        mHolder.binding.listItemBookForeground.animate().translationX(0);
     }
 
 
