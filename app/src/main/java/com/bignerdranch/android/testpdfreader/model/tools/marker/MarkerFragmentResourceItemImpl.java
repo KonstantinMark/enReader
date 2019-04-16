@@ -1,6 +1,6 @@
 package com.bignerdranch.android.testpdfreader.model.tools.marker;
 
-import com.bignerdranch.android.testpdfreader.control.resource.view_fragment.mobile_view.PageFragmentItemWrapper;
+import com.bignerdranch.android.testpdfreader.ui.resource.view_fragment.mobile_view.PageFragmentItemWrapper;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfMobilePageListItemBinding;
 
 public class MarkerFragmentResourceItemImpl implements Marker {

@@ -68,7 +68,7 @@ public class ObservableScrollView extends ScrollView{
 	}
 	
 	/**
-	 * google should make this method public and add a setOnScrollChangedListener
+	 * google should make this method public and insert a setOnScrollChangedListener
 	 * override to allow listener
 	 */
 	@Override

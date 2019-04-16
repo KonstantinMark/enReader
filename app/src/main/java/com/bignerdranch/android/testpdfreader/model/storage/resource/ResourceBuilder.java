@@ -3,53 +3,48 @@ package com.bignerdranch.android.testpdfreader.model.storage.resource;
 import android.content.Context;
 import android.net.Uri;
 
-import com.bignerdranch.android.testpdfreader.model.storage.db.BookCursorWrapper;
+import com.bignerdranch.android.testpdfreader.db.entry.Resource;
+import com.bignerdranch.android.testpdfreader.model.storage.db.sqLite.BookCursorWrapper;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.img.ResourceImgFactory;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceInformation;
-import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
 
 public class ResourceBuilder {
 
-    private Context mContext;
-    private ResourceInformation mResourceInformation;
 
-    public ResourceBuilder(Context context) {
-        mContext = context;
-        mResourceInformation = new ResourceInformation(mContext);
-    }
-
-    public IResource buildNew(Uri uri) {
+    public static Resource buildNew(Uri uri, Context context) {
+        ResourceInformation mResourceInformation = new ResourceInformation(context);
         Resource resource = new Resource();
-        resource.setUri(uri);
-        resource.setName(mResourceInformation.getResourceName(uri));
-        resource.setType(mResourceInformation.identifyType(uri));
+        resource.uri = uri;
+        resource.name = mResourceInformation.getResourceName(uri);
+        resource.type = mResourceInformation.identifyType(uri);
 
-        new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
+//        new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
 
-        resource.setMetaData(new MetaData());
+//        resource.setMetaData(new MetaDataImpl());
 
-        MetaDataManager metaDataManager = new MetaDataManager();
-        metaDataManager.setLastOpenedDateCurrent(resource);
-        metaDataManager.setLastCurrentPageInformation(resource, 0, 0);
+//        MetaDataManager metaDataManager = new MetaDataManager();
+//        metaDataManager.setLastOpenedDateCurrent(resource);
+//        metaDataManager.setLastCurrentPageInformation(resource, 0, 0);
 
         return resource;
     }
 
-    public IResource build(BookCursorWrapper cursor) {
-        Resource resource = new Resource();
-        MetaData metaData = new MetaData();
-        resource.setMetaData(metaData);
-
-        resource.setUri(cursor.getUri());
-        resource.setType(cursor.getType());
-        resource.setName(mResourceInformation.getResourceName(resource.getUri()));
-        new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
-
-        metaData.setTimeLastOpened(cursor.getTime());
-        metaData.setCurrentPage(cursor.getCurrentPage());
-        metaData.setItemOnPage(cursor.getScrollOnPage());
-
-        return resource;
+    public Resource build(BookCursorWrapper cursor) {
+//        ResourceImpl resource = new ResourceImpl();
+//        MetaDataImpl metaData = new MetaDataImpl();
+//        resource.setMetaData(metaData);
+//
+//        resource.setUri(cursor.getUri());
+//        resource.setType(cursor.getType());
+//        resource.setName(mResourceInformation.getResourceName(resource.getUri()));
+//        new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
+//
+//        metaData.setTimeLastOpened(cursor.getTime());
+//        metaData.setCurrentPage(cursor.getCurrentPage());
+//        metaData.setItemOnPage(cursor.getScrollOnPage());
+//
+//        return resource;
+        return null;
     }
 
 }

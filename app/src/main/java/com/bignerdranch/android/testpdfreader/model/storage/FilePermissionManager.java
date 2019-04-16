@@ -6,14 +6,8 @@ import android.net.Uri;
 
 public class FilePermissionManager {
 
-    Context mContext;
-
-    public FilePermissionManager(Context context) {
-        mContext = context;
-    }
-
-    public void grantPermissions(Uri uri) {
-        mContext.grantUriPermission(mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        mContext.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    public static void grantPermissions(Uri uri, Context context) {
+        context.grantUriPermission(context.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }
 }

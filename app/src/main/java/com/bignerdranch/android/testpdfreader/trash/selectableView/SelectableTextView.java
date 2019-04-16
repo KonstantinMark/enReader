@@ -806,7 +806,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
         
         
 		/**
-		 * Adjustment to add to the Raw x, y coordinate of the touch position to getResourceImg the location of where
+		 * Adjustment to insert to the Raw x, y coordinate of the touch position to getResourceImg the location of where
 		 * the cursor is pointing to
 		 */
 		private int mAdjustX;

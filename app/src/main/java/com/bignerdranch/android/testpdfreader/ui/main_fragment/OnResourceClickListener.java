@@ -1,0 +1,55 @@
+package com.bignerdranch.android.testpdfreader.ui.main_fragment;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+
+import com.bignerdranch.android.testpdfreader.ui.resource.ResourceViewerActivity;
+import com.bignerdranch.android.testpdfreader.model.storage.Storage;
+import com.bignerdranch.android.testpdfreader.db.entry.Resource;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.MetaDataManager;
+
+public class OnResourceClickListener implements View.OnClickListener {
+
+    private Context mContext;
+    private Resource mResource;
+    private int mPosition;
+    private MainFragment.ResourceAdapter mAdapter;
+
+    public OnResourceClickListener(Context context, MainFragment.ResourceAdapter adapter, int position, Resource resource) {
+        mContext = context;
+        mResource = resource;
+        mPosition = position;
+        mAdapter = adapter;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.i("MY_TAG", "onClick");
+        setResourceDateOpenedNow();
+        Intent i = ResourceViewerActivity.newIntent(
+                mContext,
+                mResource
+        );
+        mContext.startActivity(i);
+        Log.i("MY_TAG", "startActivity");
+    }
+
+    private void setResourceDateOpenedNow() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Storage storage = Storage.instance(mContext);
+                Resource resource = storage.get(mResource.getUri());
+                MetaDataManager metaDataManager = new MetaDataManager();
+                metaDataManager.setLastOpenedDateCurrent(resource);
+                storage.update(resource);
+            }
+        };
+        AsyncTask.execute(runnable);
+
+        mAdapter.moveItem(mPosition, 0);
+    }
+}

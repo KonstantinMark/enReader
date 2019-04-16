@@ -4,25 +4,27 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.BindingAdapter;
 
 public class ResourceItemViewModel extends BaseObservable {
     private Context mContext;
-    private IResource mResource;
+    private Resource mResource;
 
     public ResourceItemViewModel(Context context) {
         mContext = context;
     }
 
-    public void setResource(IResource resource){
+    public void setResource(Resource resource){
         mResource = resource;
     }
 
+    // TODO
     public Drawable getImg(){
-        return mResource.getImg();
+//        return mResource.getImg();
+        return null;
     }
 
     public String getName(){

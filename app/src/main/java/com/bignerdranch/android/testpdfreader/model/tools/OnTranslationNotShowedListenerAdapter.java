@@ -1,6 +1,6 @@
 package com.bignerdranch.android.testpdfreader.model.tools;
 
-import com.bignerdranch.android.testpdfreader.control.resource.text_selection.TextSelector;
+import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
 
 public class OnTranslationNotShowedListenerAdapter implements OnTranslationNotShowedListener {
     private TextSelector mSelector;

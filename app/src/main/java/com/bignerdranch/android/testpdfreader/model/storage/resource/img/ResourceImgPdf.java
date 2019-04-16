@@ -2,11 +2,10 @@ package com.bignerdranch.android.testpdfreader.model.storage.resource.img;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
 
-import com.bignerdranch.android.testpdfreader.model.storage.resource.IResource;
+import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class ResourceImgPdf implements IResourceImg {
     }
 
     @Override
-    public void setImage(IResource resource) {
+    public void setImage(Resource resource) {
         Bitmap bitmap = null;
             try (ParcelFileDescriptor descriptor =
                          mContext.getContentResolver().openFileDescriptor(resource.getUri(), "r");
@@ -41,6 +40,8 @@ public class ResourceImgPdf implements IResourceImg {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        resource.setImg(new BitmapDrawable(bitmap));
+
+            // TODO
+//        resource.setImg(new BitmapDrawable(bitmap));
     }
 }
