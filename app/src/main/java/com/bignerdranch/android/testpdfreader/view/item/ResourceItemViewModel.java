@@ -28,7 +28,7 @@ public class ResourceItemViewModel extends BaseObservable {
     }
 
     public String getName(){
-        return mResource.getName();
+        return mResource.name;
     }
 
     @BindingAdapter("android:src")

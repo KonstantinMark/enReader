@@ -1,5 +1,6 @@
 package com.bignerdranch.android.testpdfreader.ui.main_fragment;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,10 +12,8 @@ import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.db.AppDatabase;
-import com.bignerdranch.android.testpdfreader.ui.MainActivity;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.databinding.ListItemBookBinding;
-import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 import com.bignerdranch.android.testpdfreader.view.FragmentMainViewModel;
 import com.bignerdranch.android.testpdfreader.view.item.ResourceItemViewModel;
@@ -24,24 +23,17 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainFragment extends Fragment implements MainActivity.ResourceItemAddedListener {
+public class MainFragment extends Fragment {
     private String TAG = "MainFragment";
     private FragmentMainBinding mBinding;
     private ResourceAdapter mAdapter;
 
     public static MainFragment newInstance(){
         return new MainFragment();
-    }
-
-    private Storage storage;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
     }
 
     @Override
@@ -78,29 +70,26 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
     }
 
     private void updateResourcesList() {
-        final List<Resource> resources = getResourceList();
-        if (mAdapter == null) {
-            mAdapter = new ResourceAdapter(resources);
-            mBinding.itemsRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setResources(resources);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
+        AppDatabase db = AppDatabase.getDatabase(getContext());
+        LiveData<List<Resource>> liveResources = db.resourceDao().loadAllResources();
 
-    //TODO
-    private List<Resource> getResourceList() {
-        AppDatabase database = AppDatabase.getInMemoryDatabase(getActivity().getApplicationContext());
-        List<Resource> resources = database.resourceDao().loadAllResourcesSync();
-//        Collections.sort(resources);
-//        Collections.reverse(resources);
-        return resources;
-    }
-
-    @Override
-    public void notifyItemAdded(Resource resource) {
-        if (resource != null)
-            mAdapter.addItem(resource, 0);
+        liveResources.observe(this, resources -> {
+            if (mAdapter == null) {
+                mAdapter = new ResourceAdapter(resources);
+                mBinding.itemsRecyclerView.setAdapter(mAdapter);
+            } else {
+                List<Resource> current = mAdapter.getResources();
+                for (Resource r: resources){
+                    if(!current.contains(r))
+                        mAdapter.addItem(r, resources.indexOf(r));
+                }
+                for(int i = 0; i < current.size(); i++){
+                    if(!resources.contains(current.get(i))){
+                        mAdapter.removeItem(i);
+                    }
+                }
+            }
+        });
     }
 
     public class ResourceHolder extends RecyclerView.ViewHolder {
@@ -119,7 +108,7 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
         public void setListeners() {
             mBinding.listItemBookForeground.setOnTouchListener(mBookItemTouchListener);
             mBinding.listItemBookForeground.setOnClickListener(new OnResourceClickListener(
-                    getContext(), mAdapter, getAdapterPosition(), mResource));
+                    getContext(), mResource));
             mBinding.listItemBookBackground.setOnClickListener(new OnResourceDeleteListener(
                     getContext(), mAdapter, getAdapterPosition(), mResource, getView()));
         }
@@ -149,33 +138,32 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
             return new ResourceHolder(binding);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         public ResourceAdapter(List<Resource> resourceList) {
             mIResources = resourceList;
-            mBinding.itemsRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN)
+            mBinding.itemsRecyclerView.setOnTouchListener(new ResourceOnTouchListener());
+        }
+
+        private class ResourceOnTouchListener implements View.OnTouchListener{
+
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                v.setOnTouchListener((v2, event2) -> {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
                         changCurrentInDeleteMod(null);
+                    }
                     return false;
-                }
-            });
+                });
+                return false;
+            }
         }
 
         @Override
         public void onBindViewHolder(@NonNull ResourceHolder resourceHolder, int i) {
             resourceHolder.bind(mIResources.get(i));
-            mBinding.itemsRecyclerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    changCurrentInDeleteMod(null);
-                }
-            });
-        }
-
-        public void moveItem(int from, int to) {
-            changCurrentInDeleteMod(null);
-            mIResources.add(to, mIResources.remove(from));
-            notifyItemMoved(from, to);
+            mBinding.itemsRecyclerView.setOnClickListener(v -> changCurrentInDeleteMod(null));
         }
 
         public void removeItem(int position) {
@@ -207,6 +195,10 @@ public class MainFragment extends Fragment implements MainActivity.ResourceItemA
 
         public void forgetMe(ResourceHolder holder) {
             if (mCurrentInDeleteMod == holder) mCurrentInDeleteMod = null;
+        }
+
+        private List<Resource> getResources(){
+            return mIResources;
         }
     }
 }

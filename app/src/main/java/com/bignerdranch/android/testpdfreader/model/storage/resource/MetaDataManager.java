@@ -1,18 +1,17 @@
 package com.bignerdranch.android.testpdfreader.model.storage.resource;
 
+import com.bignerdranch.android.testpdfreader.db.entry.MetaData;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 
 public class MetaDataManager {
 
-    public void setLastOpenedDateCurrent(Resource resource) {
-//        MetaData metaData = resource.getMetaData();
-//        metaData.setTimeLastOpened(new java.sql.Timestamp(new java.util.Date().getTime()));
+    public static void setLastOpenedDateCurrent(MetaData metaData) {
+        metaData.lastOpenedTime = new java.sql.Timestamp(new java.util.Date().getTime());
     }
 
-    public void setLastCurrentPageInformation(Resource resource, int page, int item) {
-//        MetaData metaData = resource.getMetaData();
-//        metaData.setCurrentPage(page);
-//        metaData.setItemOnPage(item);
+    public static void setLastCurrentPageInformation(MetaData metaData, int page, int item) {
+        metaData.currentPage = page;
+        metaData.currentItem = item;
     }
 
 

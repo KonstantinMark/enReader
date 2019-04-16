@@ -19,17 +19,22 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ResourceDao resourceDao();
     public abstract MetaDataDao metaDataDao();
 
-    public static AppDatabase getInMemoryDatabase(Context context) {
+    public static AppDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
-            INSTANCE =
-                    Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
-                            // To simplify the codelab, allow queries on the main thread.
-                            // Don't do this on a real app! See PersistenceBasicSample for an example.
-                            .allowMainThreadQueries()
-                            .build();
+            INSTANCE = Room.databaseBuilder(context,
+                    AppDatabase.class, "database-name").build();
         }
         return INSTANCE;
     }
+
+//    public static AppDatabase getInMemoryDatabase(Context context) {
+//        if (INSTANCE == null) {
+//            INSTANCE =
+//                    Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
+//                            .build();
+//        }
+//        return INSTANCE;
+//    }
 
     public static void destroyInstance() {
         INSTANCE = null;

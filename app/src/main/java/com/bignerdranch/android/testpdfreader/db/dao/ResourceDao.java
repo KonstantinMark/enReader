@@ -20,16 +20,20 @@ import androidx.room.Update;
 @Dao
 @TypeConverters(UriConverter.class)
 public interface ResourceDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.FAIL)
     void insert(Resource resource);
 
     @Update
     void update(Resource resource);
 
-    @Query("SELECT * FROM resource")
+    @Query("SELECT * " +
+            "FROM resource r inner join metaData m on r.uri = m.uri " +
+            "order by m.lastOpenedTime desc" )
     LiveData<List<Resource>> loadAllResources();
 
-    @Query("SELECT * FROM resource")
+    @Query("SELECT * " +
+            "FROM resource r left join metaData m on r.uri = m.uri " +
+            "order by m.lastOpenedTime")
     List<Resource> loadAllResourcesSync();
 
     @Query("SELECT * from resource where uri = :uri")

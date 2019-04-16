@@ -19,7 +19,7 @@ import androidx.room.TypeConverters;
 @TypeConverters(UriConverter.class)
 public interface MetaDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(MetaData resource);
+    void insert(MetaData data);
 
     @Query("SELECT * FROM metaData")
     LiveData<List<MetaData>> loadAllMetaDate();

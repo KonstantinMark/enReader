@@ -83,7 +83,6 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
     }
 
     private void setResourceViewFragment(FragmentManager fm) {
-        Log.i("MY_TAG", "setResourceViewFragment");
         Storage storage = Storage.instance(getApplicationContext());
         Resource resource = storage.get(mResourceUri);
 
@@ -94,7 +93,6 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
                 .commit();
 
         mContentFragment = fragment;
-        Log.i("MY_TAG", "setResourceViewFragment...");
     }
 
     @Override

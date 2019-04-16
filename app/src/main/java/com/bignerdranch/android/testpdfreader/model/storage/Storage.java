@@ -20,7 +20,7 @@ public class Storage {
 //        db =  Room.databaseBuilder(context,
 //                AppDatabase.class, "database-name").build();
 //        mDatabase = new BookBaseHelper(mContext).getWritableDatabase();
-        db = AppDatabase.getInMemoryDatabase(context);
+        db = AppDatabase.getDatabase(context);
     }
 
     public static Storage instance(Context context) {

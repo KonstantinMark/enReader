@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.View;
 
 import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.db.AppDatabase;
 import com.bignerdranch.android.testpdfreader.model.storage.Storage;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,15 +30,12 @@ public class OnResourceDeleteListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        mAdapter.removeItem(mPosition);
+//        mAdapter.removeItem(mPosition);
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final Storage storage = Storage.instance(mContext);
-                storage.remove(mResource);
-                showRemoveCancelMessage(mResource, mPosition);
-            }
+        Runnable runnable = () -> {
+            AppDatabase db = AppDatabase.getDatabase(mContext);
+            db.resourceDao().delete(mResource);
+            showRemoveCancelMessage(mResource, mPosition);
         };
         AsyncTask.execute(runnable);
     }
@@ -61,22 +59,14 @@ public class OnResourceDeleteListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            Runnable runnable1 = new Runnable() {
-                @Override
-                public void run() {
-                    Storage storage = Storage.instance(mContext);
-                    storage.insert(resource);
-                }
+            Runnable runnable1 = () -> {
+                Storage storage = Storage.instance(mContext);
+                storage.insert(resource);
             };
             AsyncTask.execute(runnable1);
 
             Handler handler = new Handler(Looper.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.addItem(resource, position);
-                }
-            };
+            Runnable runnable = () -> mAdapter.addItem(resource, position);
             handler.postDelayed(runnable, 0);
         }
     }
