@@ -1,16 +1,21 @@
 package com.bignerdranch.android.testpdfreader.ui.resources_list;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
+import com.bignerdranch.android.testpdfreader.db.AppDatabase;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourcesListViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,17 +24,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class ResourcesFragment extends Fragment {
+public class ResourceListFragment extends Fragment {
 
-    private String TAG = "ResourcesFragment";
+    private String TAG = "ResourceListFragment";
 
     private FragmentMainBinding mBinding;
 
     private ResourceAdapter mAdapter;
 
-    public static ResourcesFragment newInstance(){
-        return new ResourcesFragment();
+    public static ResourceListFragment newInstance(){
+        return new ResourceListFragment();
     }
 
     @Override
@@ -50,6 +57,25 @@ public class ResourcesFragment extends Fragment {
                 ViewModelProviders.of(this).get(ResourcesListViewModel.class);
 
         //TODO set click listener
+        ItemTouchHelper helper = new ItemTouchHelper(new SwipeToDeleteCallback(){
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Runnable runnable = () -> {
+                    int position = viewHolder.getAdapterPosition();
+                    Resource resource = Objects.requireNonNull(mAdapter.getResourceList()).get(position);
+                    AppDatabase db = AppDatabase.getDatabase(getContext());
+                    db.resourceDao().delete(resource);
+
+                    Snackbar.make(Objects.requireNonNull(getView()), R.string.delete_undo_title, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.delete_undo_btn, v ->
+                                    AsyncTask.execute(() -> db.resourceDao().insert(resource)))
+                            .show();
+                };
+                AsyncTask.execute(runnable);
+            }
+        });
+
+        helper.attachToRecyclerView(mBinding.itemsRecyclerView);
 
         subscribeUi(viewModel.getResources());
     }

@@ -22,9 +22,6 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
     @Nullable
     private List<? extends Resource> mResourceList;
 
-    public ResourceAdapter(){
-       // setHasStableIds(true);
-    }
 
     public void setResourceList(final List<? extends Resource> resourceList) {
         if(mResourceList == null) {
@@ -61,6 +58,11 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
             mResourceList = resourceList;
             result.dispatchUpdatesTo(this);
         }
+    }
+
+    @Nullable
+    public List<? extends Resource> getResourceList() {
+        return mResourceList;
     }
 
     @NonNull
@@ -173,7 +175,7 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
         public ResourceHolder(ListItemBookBinding binding){
             super(binding.getRoot());
             this.binding = binding;
-            //        mBookItemTouchListener = new BookItemTouchListener(this, ResourcesFragment.this.mAdapter, getContext());
+            //        mBookItemTouchListener = new BookItemTouchListener(this, ResourceListFragment.this.mAdapter, getContext());
 //            setListeners();
         }
 //
