@@ -21,7 +21,11 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
 
     @Nullable
     private List<? extends Resource> mResourceList;
+    private ResourceClickCallback mRsourceCallback;
 
+    public ResourceAdapter(ResourceClickCallback rsourceCallback) {
+        mRsourceCallback = rsourceCallback;
+    }
 
     public void setResourceList(final List<? extends Resource> resourceList) {
         if(mResourceList == null) {
@@ -71,6 +75,7 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
         ListItemBookBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_book,
                         parent, false);
+        binding.setCallback(mRsourceCallback);
         return new ResourceHolder(binding);
     }
 

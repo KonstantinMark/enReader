@@ -9,7 +9,8 @@
     <string name="delete_undo_title">Отменить?</string>
     <string name="delete_undo_btn">да</string>
     <string name="resource_loading_error">Ошибка при загрузке ресурса</string>
-    <string name="translation_error">Не удалось пересести</string>
+    <string name="translation_error">Не удалось перевести</string>
+    <string name="resource_deleted">Добавлен новый ресурс</string>
 
 
 </resources>

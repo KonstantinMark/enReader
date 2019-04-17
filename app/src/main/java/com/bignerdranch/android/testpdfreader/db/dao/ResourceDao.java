@@ -37,7 +37,7 @@ public interface ResourceDao {
     List<Resource> loadAllResourcesSync();
 
     @Query("SELECT * from resource where uri = :uri")
-    Resource loadResourceSync(Uri uri);
+     Resource loadResourceSync(Uri uri);
 
     @Query("SELECT * from resource where uri = :uri")
     LiveData<Resource> loadResource(Uri uri);

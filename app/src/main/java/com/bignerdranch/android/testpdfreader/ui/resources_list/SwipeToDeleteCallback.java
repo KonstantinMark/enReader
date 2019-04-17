@@ -15,9 +15,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-//        super.clearView(recyclerView, viewHolder);
         ResourceAdapter.ResourceHolder holder = (ResourceAdapter.ResourceHolder) viewHolder;
-
         getDefaultUIUtil().clearView(holder.binding.listItemBookForeground);
     }
 

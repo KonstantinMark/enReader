@@ -25,7 +25,7 @@ public class FragmentPdfMobileViewViewModal extends BaseObservable {
     }
 
     public void setCurrentPageNumber(int currentPageNumber) {
-        mCurrentPageNumber = currentPageNumber;
+        mCurrentPageNumber = currentPageNumber + 1;
         notifyChange();
     }
 

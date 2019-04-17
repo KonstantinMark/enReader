@@ -2,25 +2,25 @@ package com.bignerdranch.android.testpdfreader.view.item;
 
 import android.view.View;
 
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageItemWrapper;
+
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
 
 public class PdfMobilePageItemViewModel extends BaseObservable {
     private static final String TAG = "ContentItemViewModel";
-    private String mContent;
+    private PageItemWrapper mContent;
     private IState mState;
-    private boolean mLabelVisibility = false;
+
+    public void setContent(PageItemWrapper content) {
+        mContent = content;
+        setState(new DefaultState());
+    }
 
     public void setTranslationLoadingAnimationVisibility(boolean flag) {
         setState(flag ? new TranslateLoadingState() : new DefaultState());
     }
-
-    @Bindable
-    public int getLabelVisibility() {
-        return mLabelVisibility ? View.VISIBLE : View.GONE;
-    }
-
     public void showTranslation(String translation) {
         setState(new TranslateVisible(translation));
     }
@@ -29,29 +29,17 @@ public class PdfMobilePageItemViewModel extends BaseObservable {
         return getState().getVisibilityTranslation() == View.VISIBLE;
     }
 
-    public void setLabelVisibility(boolean visibility) {
-        mLabelVisibility = visibility;
-        notifyChange();
-    }
-
-    private IState getState() {
-        return mState;
-    }
-
-    private void setState(IState state) {
-        mState = state;
-        notifyChange();
+    @Bindable
+    public String getContent() {
+        return mContent.content;
     }
 
     @Bindable
-    public String getContent() {
-        return mContent;
+    public int getLabelVisibility() {
+        return mContent.isCurrent ? View.VISIBLE : View.GONE;
     }
 
-    public void setContent(String content) {
-        mContent = content;
-        setState(new DefaultState());
-    }
+
 
     @Bindable
     public String getTranslation() {
@@ -71,6 +59,15 @@ public class PdfMobilePageItemViewModel extends BaseObservable {
     @Bindable
     public int getVisibilityTranslateBtn() {
         return getState().getVisibilityTranslateBtn();
+    }
+
+    private IState getState() {
+        return mState;
+    }
+
+    private void setState(IState state) {
+        mState = state;
+        notifyChange();
     }
 
     interface IState {

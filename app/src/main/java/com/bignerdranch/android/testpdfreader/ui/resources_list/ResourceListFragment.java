@@ -1,8 +1,8 @@
 package com.bignerdranch.android.testpdfreader.ui.resources_list;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +11,7 @@ import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.db.AppDatabase;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
+import com.bignerdranch.android.testpdfreader.ui.resource.ResourceViewerActivity;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourcesListViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,7 +45,7 @@ public class ResourceListFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
 
         mBinding.itemsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        mAdapter = new ResourceAdapter();
+        mAdapter = new ResourceAdapter(mCallback);
         mBinding.itemsRecyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();
@@ -56,7 +57,7 @@ public class ResourceListFragment extends Fragment {
         final ResourcesListViewModel viewModel =
                 ViewModelProviders.of(this).get(ResourcesListViewModel.class);
 
-        //TODO set click listener
+        // remove resource
         ItemTouchHelper helper = new ItemTouchHelper(new SwipeToDeleteCallback(){
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -74,7 +75,6 @@ public class ResourceListFragment extends Fragment {
                 AsyncTask.execute(runnable);
             }
         });
-
         helper.attachToRecyclerView(mBinding.itemsRecyclerView);
 
         subscribeUi(viewModel.getResources());
@@ -90,6 +90,12 @@ public class ResourceListFragment extends Fragment {
             }
         });
     }
+
+    private ResourceClickCallback mCallback = resource -> {
+        Intent intent = ResourceViewerActivity.newIntent(getContext(), resource.uri);
+        startActivity(intent);
+    };
+
 
     //    private void updateUI(){
 //        setAnimationVisibility(true);

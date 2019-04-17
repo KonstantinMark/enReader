@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.ui.resource.view_fragment;
+package com.bignerdranch.android.testpdfreader.ui.resource.resource_view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

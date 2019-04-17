@@ -14,12 +14,24 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
+import androidx.room.Update;
 
 @Dao
 @TypeConverters(UriConverter.class)
 public interface MetaDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MetaData data);
+
+    @Update
+    void update(MetaData data);
+
+
+    @Query("UPDATE metaData SET currentItem = :currentItem where uri = :uri")
+    void update(Uri uri, int currentItem);
+
+    @Query("UPDATE metaData SET currentPage = :currentPage, currentItem = :currentItem" +
+            " where uri = :uri")
+    void update(Uri uri, int currentPage, int currentItem);
 
     @Query("SELECT * FROM metaData")
     LiveData<List<MetaData>> loadAllMetaDate();

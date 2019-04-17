@@ -62,7 +62,7 @@ public class TranslateFragment extends Fragment implements WordTranslateListener
         super.onPause();
     }
 
-    public void reset() {
+    public void showAnimation() {
         mViewModal.reset();
         changTranslationNotShowedListener(null);
     }

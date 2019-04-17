@@ -1,19 +1,19 @@
 package com.bignerdranch.android.testpdfreader.model.tools.marker;
 
-import com.bignerdranch.android.testpdfreader.ui.resource.view_fragment.mobile_view.PageFragmentItemWrapper;
-import com.bignerdranch.android.testpdfreader.databinding.FragmentPdfMobilePageListItemBinding;
+import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageItemBinding;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageItemWrapper;
 
 public class MarkerFragmentResourceItemImpl implements Marker {
 
     public boolean valid = true;
-    private FragmentPdfMobilePageListItemBinding mBinding;
+    private FragmentMobilePageItemBinding mBinding;
     private int mPosition;
     private int mCurrentPage;
-    private PageFragmentItemWrapper mContent;
+    private PageItemWrapper mContent;
 
     public MarkerFragmentResourceItemImpl(
-            FragmentPdfMobilePageListItemBinding binding,
-            int currentPage, int position, PageFragmentItemWrapper content) {
+            FragmentMobilePageItemBinding binding,
+            int currentPage, int position, PageItemWrapper content) {
         mBinding = binding;
         mPosition = position;
         mCurrentPage = currentPage;
@@ -26,10 +26,10 @@ public class MarkerFragmentResourceItemImpl implements Marker {
 
     @Override
     public void setVisibility(boolean visibility) {
-        if (valid) {
-            mBinding.getViewModel().setLabelVisibility(visibility);
-        }
-        mContent.setMarker(visibility);
+//        if (valid) {
+//            mBinding.getViewModel().setLabelVisibility(visibility);
+//        }
+//        mContent.setCurrent(visibility);
     }
 
     @Override

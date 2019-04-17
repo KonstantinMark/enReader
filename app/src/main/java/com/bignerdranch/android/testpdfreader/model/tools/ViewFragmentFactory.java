@@ -1,13 +1,14 @@
 package com.bignerdranch.android.testpdfreader.model.tools;
 
+import android.net.Uri;
+
 import com.bignerdranch.android.testpdfreader.ui.resource.ResourceViewFragment;
-import com.bignerdranch.android.testpdfreader.ui.resource.view_fragment.MobileViewFragment;
-import com.bignerdranch.android.testpdfreader.db.entry.Resource;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.MobileViewFragment;
 
 public class ViewFragmentFactory {
 
-    public static ResourceViewFragment getFragment(Resource resource) {
-        return MobileViewFragment.config(resource.getUri(), new MobileViewFragment());
+    public static ResourceViewFragment getFragment(Uri uri) {
+        return MobileViewFragment.config(uri, new MobileViewFragment());
 //        switch (descriptor.getType()) {
 //
 //            case (ResourceDescriptor.PDF_FULL_TYPE):
