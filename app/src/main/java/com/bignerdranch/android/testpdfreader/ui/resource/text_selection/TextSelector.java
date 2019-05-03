@@ -5,4 +5,6 @@ public interface TextSelector {
     void unSelect();
 
     void select();
+
+    void set(int start, int end);
 }

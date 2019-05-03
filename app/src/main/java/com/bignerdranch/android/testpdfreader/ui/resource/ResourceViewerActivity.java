@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.ui.AbstractActivityWithPermissions;
@@ -23,6 +24,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class ResourceViewerActivity extends AbstractActivityWithPermissions
         implements ITextSelectionListener, SelectionRemovedListener {
+    private static String TAG = "ResourceViewerActivity";
+
     private static final String EXTRA_RESOURCE_URI =
             "com.bignerdranch.android.testpdfreader.model.ResourceDescriptor.resource_uri";
 
@@ -112,7 +115,7 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
     }
 
     void createFragmentTranslation() {
-        if(mContentFragment == null) {
+        if(mTranslateFragment == null) {
             mTranslateFragment = TranslateFragment.newInstance(this::removeFragmentTranslation);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -126,6 +129,7 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.translate_hide_down, R.anim.translate_hide_up);
             fragmentTransaction.remove(mTranslateFragment).commit();
+            mTranslateFragment = null;
         }
     }
 

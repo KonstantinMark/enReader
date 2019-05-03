@@ -1,5 +1,6 @@
 package com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,10 @@ import android.view.ViewGroup;
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageBinding;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageItemBinding;
+import com.bignerdranch.android.testpdfreader.model.components.SelectionAdaptedTextView;
+import com.bignerdranch.android.testpdfreader.model.tools.OnClickWithoutFocusFixer;
+import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.ITextSelectionListener;
+import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
 import com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItemViewModel;
 
 import java.util.List;
@@ -20,6 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
 
     private List<? extends PageItemWrapper> mItemList;
+    private TextSelectionManager mTextSelectionManager;
+
+    public PageAdapter(TextSelectionManager textSelectionManager) {
+        mTextSelectionManager = textSelectionManager;
+    }
 
     public void setItemList(List<? extends PageItemWrapper> itemList) {
         if(mItemList == null){
@@ -55,7 +65,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
             mItemList = itemList;
             result.dispatchUpdatesTo(this);
         }
-
     }
 
     public List<? extends PageItemWrapper> getItemList() {
@@ -83,12 +92,37 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
         return mItemList == null ? 0 : mItemList.size();
     }
 
-    public class PageHolder extends RecyclerView.ViewHolder{
+
+
+    public class PageHolder extends RecyclerView.ViewHolder {
         FragmentMobilePageItemBinding binding;
 
         public PageHolder(FragmentMobilePageItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            setListeners();
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        public void setListeners(){
+            binding.fragmentPdfMobilePageListItemContentText.setOnClickListener(
+                    new OnWordClickedListener(
+                            new TextSelectorImpl(
+                                    binding.fragmentPdfMobilePageListItemContentText),
+                            mTextSelectionManager)
+            );
+            binding.fragmentPdfMobilePageListItemContentText.setOnTouchListener(
+                    new OnClickWithoutFocusFixer());
+
+            binding.fragmentPdfMobilePageListItemContentText.setOnSelectionChangListener(
+                    new OnSelectionChangListenerImpl(mTextSelectionManager,
+                            binding.getViewModel(), binding.fragmentPdfMobilePageListItemContentText)
+            );
+            binding.fragmentPdfMobilePageListItemTranslateParagraphBtn.setOnClickListener(
+                    new OnTranslateBtnClickListener(binding.getViewModel(), mTextSelectionManager)
+            );
         }
     }
+
+
 }

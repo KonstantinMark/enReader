@@ -109,9 +109,7 @@ public class MobileViewFragment extends ResourceViewFragment {
                 new ViewPager.SimpleOnPageChangeListener(){
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                        AsyncTask.execute(()->{
-                            db.metaDataDao().update(getResourceUri(), position, 0);
-                        });                    }
+                        AsyncTask.execute(()-> db.metaDataDao().update(getResourceUri(), position, 0));}
                 });
     }
 
@@ -135,9 +133,11 @@ public class MobileViewFragment extends ResourceViewFragment {
         mResourceViewModel.getMetaDate().observe(this, metaData -> {
             if(metaData!= null){
                 mBinding.getViewModel().setCurrentPageNumber(metaData.currentPage);
+                notifySelectionRemoved();
             }
         });
     }
+
 //    private void currentPageChanged(int currentPagePosition) {
 //        mBinding.getViewModel().setCurrentPageNumber(currentPagePosition + 1);
 //        notifySelectionRemoved();
@@ -174,9 +174,9 @@ public class MobileViewFragment extends ResourceViewFragment {
 
 
 
-//    private void notifySelectionRemoved() {
-//        mSelectionRemovedListener.onSelectionRemoved();
-//    }
+    private void notifySelectionRemoved() {
+        mSelectionRemovedListener.onSelectionRemoved();
+    }
 
 //    private void updateResourceCurrentPage(int currentPage) {
 //        mResource.getMetaData().setCurrentPage(currentPage);

@@ -2,13 +2,16 @@ package com.bignerdranch.android.testpdfreader.view.item;
 
 import android.view.View;
 
+import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTranslatedListener;
 import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageItemWrapper;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
 
-public class PdfMobilePageItemViewModel extends BaseObservable {
+public class PdfMobilePageItemViewModel extends BaseObservable implements
+        OnParagraphTranslatedListener {
     private static final String TAG = "ContentItemViewModel";
     private PageItemWrapper mContent;
     private IState mState;
@@ -68,6 +71,16 @@ public class PdfMobilePageItemViewModel extends BaseObservable {
     private void setState(IState state) {
         mState = state;
         notifyChange();
+    }
+
+    @Override
+    public void onParagraphTranslated(String paragraph) {
+        showTranslation(paragraph);
+    }
+
+    @Override
+    public void translateError(Error error) {
+        showTranslation("Translation error");
     }
 
     interface IState {

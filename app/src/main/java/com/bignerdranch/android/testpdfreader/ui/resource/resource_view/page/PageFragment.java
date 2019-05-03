@@ -10,11 +10,9 @@ import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageBinding;
-import com.bignerdranch.android.testpdfreader.db.entry.MetaData;
 import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.ITextSelectionListener;
 import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
 import com.bignerdranch.android.testpdfreader.model.resource_loader.OnPageLoadedListener;
-import com.bignerdranch.android.testpdfreader.model.tools.marker.MarkerIntentListener;
 import com.bignerdranch.android.testpdfreader.view.PdfMobilePageFragmentViewModel;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourceViewModel;
 
@@ -27,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -49,7 +46,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //    private ArrayList<PageItemWrapper> mContent = new ArrayList<>();
 
 //    private MarkerIntentListener mMarkerIntentListener;
-    private TextSelector currentSelected;
+
 
     public static PageFragment newInstance(Uri resourceUri, int pageNum) {
         Bundle arg = new Bundle();
@@ -84,7 +81,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         mBinding.fragmentPdfMobilePageRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getActivity()));
 
-        mPageAdapter = new PageAdapter();
+        mPageAdapter = new PageAdapter(new TextSelectionManager(mITextSelectionListener));
         mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mPageAdapter);
 
         mResourceViewModel = ViewModelProviders.of(this).get(ResourceViewModel.class);
@@ -105,7 +102,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
             mPageAdapter.setItemList(list);
             closeAnimation();
 
-            startCurrentItemChangedListen(list);
+            startCurrentContentChangedListen(list);
 //        if(mCurrentItem!= -1){
 //            PageItemWrapper wrapper = mContent.get(mCurrentItem);
 //            if(wrapper!= null) wrapper.setCurrent(true);
@@ -122,7 +119,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         mBinding.getViewModel().setAnimationVisibility(false);
     }
 
-    private void startCurrentItemChangedListen(List<PageItemWrapper> list){
+    private void startCurrentContentChangedListen(List<PageItemWrapper> list){
         mResourceViewModel.getMetaDate().observe(this, metaData -> {
             if(metaData != null ) {
                 boolean needUpdate = false;
@@ -181,20 +178,6 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         return wrappers;
     }
 
-    private void notifyTextSelected(String text, TextSelector listener) {
-        mITextSelectionListener.wordSelected(text, listener);
-
-        if (currentSelected != listener) removeCurrentSelection();
-
-        currentSelected = listener;
-    }
-
-    public void removeCurrentSelection() {
-        if (currentSelected != null)
-            currentSelected.unSelect();
-    }
-
-
     private boolean isDataNeeded = true;
     @Override
     public boolean dataStillNeeded() {
@@ -206,9 +189,6 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         isDataNeeded = false;
         super.onPause();
     }
-
-
-
 
     //------------------------------------------------------------------------
     // ######################### Holder and Adapter ##########################
@@ -346,8 +326,6 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //                mBinding.fragmentPdfMobilePageListItemContentText.setText(spannable);
 //            }
 //        }
-//
-//
 //    }
 //
 //    private class PageFragmentAdapter extends RecyclerView.Adapter<PageFragmentHolder> {
