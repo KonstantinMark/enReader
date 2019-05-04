@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bignerdranch.android.testpdfreader.model.errors.translateerrors.ServerError;
-import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTranslatedListener;
+import com.bignerdranch.android.testpdfreader.model.translator.TranslationListener;
 import com.bignerdranch.android.testpdfreader.model.translator.Translator;
 import com.bignerdranch.android.testpdfreader.model.translator.WordTranslateListener;
 import com.bignerdranch.android.testpdfreader.model.word.Translation;
@@ -83,7 +83,7 @@ public class YandexTranslator implements Translator {
     }
 
     @Override
-    public void translatePhrase(final String paragraph, final OnParagraphTranslatedListener listener, final Context context) {
+    public void translatePhrase(final String paragraph, final TranslationListener listener, final Context context) {
         String temp = paragraph.replaceAll(" ", "%20");
         String url = tarnslateRequest(temp);
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(context).getApplicationContext());
@@ -103,7 +103,7 @@ public class YandexTranslator implements Translator {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        listener.onParagraphTranslated(translation);
+                        listener.onTranslated(translation);
                     }
                 },
                 new Response.ErrorListener() {
@@ -117,7 +117,7 @@ public class YandexTranslator implements Translator {
         queue.add(jsonObjectRequest);
     }
 
-    private class WordTranslatedListenerWrapperOn implements OnParagraphTranslatedListener {
+    private class WordTranslatedListenerWrapperOn implements TranslationListener {
 
         private WordTranslateListener mListener;
         private String mWord;
@@ -128,7 +128,7 @@ public class YandexTranslator implements Translator {
         }
 
         @Override
-        public void onParagraphTranslated(String paragraph) {
+        public void onTranslated(String paragraph) {
             Word word = new Word();
             word.setWord(mWord);
 

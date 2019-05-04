@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.model.text.UnderLineSpan;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextSelector;
 
 public class TextSelectorImpl implements TextSelector {
         private int mStart;

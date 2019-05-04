@@ -2,16 +2,17 @@ package com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
-import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageBinding;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageItemBinding;
-import com.bignerdranch.android.testpdfreader.model.components.SelectionAdaptedTextView;
 import com.bignerdranch.android.testpdfreader.model.tools.OnClickWithoutFocusFixer;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.ITextSelectionListener;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextTranslationActionListener;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.impl.OnClickedWordSelector;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.impl.OnParagraphSelectedListenerImpl;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.impl.OnParagraphSelectionChangedListener;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.impl.OnTranslateBtnClickListener;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.impl.OnClickWordListenerImpl;
 import com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItemViewModel;
 
 import java.util.List;
@@ -25,10 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
 
     private List<? extends PageItemWrapper> mItemList;
-    private TextSelectionManager mTextSelectionManager;
+    private TextTranslationActionListener mTextTranslationActionListener;
 
-    public PageAdapter(TextSelectionManager textSelectionManager) {
-        mTextSelectionManager = textSelectionManager;
+    public PageAdapter(TextTranslationActionListener textTranslationActionListener) {
+        mTextTranslationActionListener = textTranslationActionListener;
     }
 
     public void setItemList(List<? extends PageItemWrapper> itemList) {
@@ -106,20 +107,24 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
         @SuppressLint("ClickableViewAccessibility")
         public void setListeners(){
             binding.fragmentPdfMobilePageListItemContentText.setOnClickListener(
-                    new OnWordClickedListener(
-                            new TextSelectorImpl(
-                                    binding.fragmentPdfMobilePageListItemContentText),
-                            mTextSelectionManager)
-            );
-            binding.fragmentPdfMobilePageListItemContentText.setOnTouchListener(
-                    new OnClickWithoutFocusFixer());
+                    new OnClickedWordSelector(
+                            new OnClickWordListenerImpl(
+                                new TextSelectorImpl(binding.fragmentPdfMobilePageListItemContentText),
+                                    mTextTranslationActionListener)
+                    ));
+            binding.fragmentPdfMobilePageListItemContentText.setOnTouchListener(new OnClickWithoutFocusFixer());
 
             binding.fragmentPdfMobilePageListItemContentText.setOnSelectionChangListener(
-                    new OnSelectionChangListenerImpl(mTextSelectionManager,
-                            binding.getViewModel(), binding.fragmentPdfMobilePageListItemContentText)
-            );
+                    new OnParagraphSelectionChangedListener(
+                            binding.fragmentPdfMobilePageListItemContentText,
+                            new OnParagraphSelectedListenerImpl(
+                                    mTextTranslationActionListener,
+                                    binding.getViewModel(),
+                                    binding.getViewModel()
+                            )));
+
             binding.fragmentPdfMobilePageListItemTranslateParagraphBtn.setOnClickListener(
-                    new OnTranslateBtnClickListener(binding.getViewModel(), mTextSelectionManager)
+                    new OnTranslateBtnClickListener(binding.getViewModel(), mTextTranslationActionListener)
             );
         }
     }

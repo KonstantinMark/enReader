@@ -5,15 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.bignerdranch.android.testpdfreader.R;
+import com.bignerdranch.android.testpdfreader.model.tools.OnTranslationRemovedListenerAdapter;
 import com.bignerdranch.android.testpdfreader.ui.AbstractActivityWithPermissions;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.ITextSelectionListener;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
+import com.bignerdranch.android.testpdfreader.model.TextTranslationAction;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextTranslationActionListener;
 import com.bignerdranch.android.testpdfreader.model.tools.ViewFragmentFactory;
-import com.bignerdranch.android.testpdfreader.model.tools.OnTranslationNotShowedListenerAdapter;
-import com.bignerdranch.android.testpdfreader.model.translator.OnParagraphTranslatedListener;
 import com.bignerdranch.android.testpdfreader.viewmodal.TranslationManagerViewModel;
 
 import androidx.annotation.NonNull;
@@ -23,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 public class ResourceViewerActivity extends AbstractActivityWithPermissions
-        implements ITextSelectionListener, SelectionRemovedListener {
+        implements TextTranslationActionListener {
     private static String TAG = "ResourceViewerActivity";
 
     private static final String EXTRA_RESOURCE_URI =
@@ -72,6 +70,62 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
         }
     }
 
+//    @Override
+//    public void wordSelected(String text, TextSelector listener) {
+//        if (mTranslateFragment == null) {
+//            createFragmentTranslation();
+//        } else {
+//            mTranslateFragment.showLoadingAnimation();
+//        }
+//        mTranslateFragment.changTranslationRemovedListener(
+//                new OnTranslationRemovedListenerAdapter(listener));
+//
+//        mTranslationManagerViewModel.getTranslator()
+//                .translateWord(text, mTranslateFragment, getApplicationContext());
+//        listener.select();
+//    }
+
+//    @Override
+//    public void paragraphSelected(String paragraph, TranslationListener receiver) {
+//        removeFragmentTranslation();
+//        mTranslationManagerViewModel.getTranslator()
+//                .translatePhrase(paragraph, receiver, getApplicationContext());
+//    }
+
+//    @Override
+//    public void allUnSelected() {
+//        removeFragmentTranslation();
+//    }
+
+    @Override
+    public void onNewAction(TextTranslationAction action) {
+        switch (action.getActionType()){
+            case ACTION_WORD_SELECTED:
+                if (mTranslateFragment == null) {
+                    createFragmentTranslation();
+                } else {
+                    mTranslateFragment.showLoadingAnimation();
+                }
+                mTranslateFragment.changTranslationRemovedListener(
+                        new OnTranslationRemovedListenerAdapter(action.getTextSelector()));
+
+                mTranslationManagerViewModel.getTranslator()
+                        .translateWord(action.getText(), mTranslateFragment, getApplicationContext());
+                action.getTextSelector().select();
+                break;
+            case ACTION_PARAGRAPH_SELECTED:
+            case ACTION_PART_PARAGRAPH_SELECTED:
+                removeFragmentTranslation();
+                mTranslationManagerViewModel.getTranslator()
+                        .translatePhrase(action.getText(), action.getTranslationListener(),
+                                getApplicationContext());
+                break;
+            case ACTION_UN_SELECT:
+                removeFragmentTranslation();
+                break;
+        }
+    }
+
     private boolean containsResourceViewFragment(FragmentManager fm) {
         mContentFragment = (ResourceViewFragment)
                 fm.findFragmentById(R.id.fragment_container_content);
@@ -87,32 +141,12 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
         mContentFragment = fragment;
     }
 
-    @Override
-    public void wordSelected(String text, TextSelector listener) {
-        if (mTranslateFragment == null) {
-            createFragmentTranslation();
-        } else {
-            mTranslateFragment.showAnimation();
-        }
-        mTranslateFragment.changTranslationNotShowedListener(
-                new OnTranslationNotShowedListenerAdapter(listener));
 
-        mTranslationManagerViewModel.getTranslator()
-                .translateWord(text, mTranslateFragment, getApplicationContext());
-        listener.select();
-    }
 
-    @Override
-    public void paragraphSelected(String paragraph, OnParagraphTranslatedListener receiver) {
-        removeFragmentTranslation();
-        mTranslationManagerViewModel.getTranslator()
-                .translatePhrase(paragraph, receiver, getApplicationContext());
-    }
-
-    @Override
-    public void allUnSelected() {
-        removeFragmentTranslation();
-    }
+//    @Override
+//    public void onSelectionRemoved() {
+//        removeFragmentTranslation();
+//    }
 
     void createFragmentTranslation() {
         if(mTranslateFragment == null) {
@@ -131,10 +165,5 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
             fragmentTransaction.remove(mTranslateFragment).commit();
             mTranslateFragment = null;
         }
-    }
-
-    @Override
-    public void onSelectionRemoved() {
-        removeFragmentTranslation();
     }
 }

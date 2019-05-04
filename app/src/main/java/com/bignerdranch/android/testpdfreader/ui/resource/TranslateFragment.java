@@ -58,16 +58,16 @@ public class TranslateFragment extends Fragment implements WordTranslateListener
 
     @Override
     public void onPause() {
-        changTranslationNotShowedListener(null);
+        changTranslationRemovedListener(null);
         super.onPause();
     }
 
-    public void showAnimation() {
+    public void showLoadingAnimation() {
         mViewModal.reset();
-        changTranslationNotShowedListener(null);
+        changTranslationRemovedListener(null);
     }
 
-    public void changTranslationNotShowedListener(OnTranslationNotShowedListener listener) {
+    public void changTranslationRemovedListener(OnTranslationNotShowedListener listener) {
         if (mNotShowedListener != null) {
             if (mNotShowedListener == listener) return;
             mNotShowedListener.onNotShoved();

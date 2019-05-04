@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.ui.resource.text_selection;
+package com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service;
 
 public interface TextSelector {
 

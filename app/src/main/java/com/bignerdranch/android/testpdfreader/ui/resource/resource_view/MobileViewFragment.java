@@ -11,10 +11,11 @@ import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageListBinding;
 import com.bignerdranch.android.testpdfreader.db.AppDatabase;
 import com.bignerdranch.android.testpdfreader.ui.resource.ResourceViewFragment;
-import com.bignerdranch.android.testpdfreader.ui.resource.SelectionRemovedListener;
 import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageFragment;
 import com.bignerdranch.android.testpdfreader.model.resource_loader.ResourceLoader;
 import com.bignerdranch.android.testpdfreader.model.tools.marker.MarkerManager;
+import com.bignerdranch.android.testpdfreader.model.TextTranslationAction;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextTranslationActionListener;
 import com.bignerdranch.android.testpdfreader.view.FragmentPdfMobileViewViewModal;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourceLoaderViewModel;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourceViewModel;
@@ -37,7 +38,7 @@ import androidx.viewpager.widget.ViewPager;
 public class MobileViewFragment extends ResourceViewFragment {
 
     private static final String TAG = "MobileViewFragment";
-    private SelectionRemovedListener mSelectionRemovedListener;
+    private TextTranslationActionListener mTextTranslationActionListener;
 
     private FragmentMobilePageListBinding mBinding;
     private FragmentStatePagerAdapterImpl mFragmentStatePagerAdapter;
@@ -52,13 +53,13 @@ public class MobileViewFragment extends ResourceViewFragment {
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
-        mSelectionRemovedListener = (SelectionRemovedListener) context;
+        mTextTranslationActionListener = (TextTranslationActionListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mSelectionRemovedListener = null;
+        mTextTranslationActionListener = null;
     }
 
     @Override
@@ -175,7 +176,8 @@ public class MobileViewFragment extends ResourceViewFragment {
 
 
     private void notifySelectionRemoved() {
-        mSelectionRemovedListener.onSelectionRemoved();
+        mTextTranslationActionListener.onNewAction(new TextTranslationAction(
+                TextTranslationAction.ActionType.ACTION_UN_SELECT));
     }
 
 //    private void updateResourceCurrentPage(int currentPage) {

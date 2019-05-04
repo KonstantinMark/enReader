@@ -6,6 +6,6 @@ public interface Translator {
 
     void translateWord(String word, WordTranslateListener listener, Context context);
 
-    void translatePhrase(String word, OnParagraphTranslatedListener listener, Context context);
+    void translatePhrase(String word, TranslationListener listener, Context context);
 
 }

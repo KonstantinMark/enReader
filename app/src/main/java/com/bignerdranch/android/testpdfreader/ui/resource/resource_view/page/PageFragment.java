@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageBinding;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.ITextSelectionListener;
-import com.bignerdranch.android.testpdfreader.ui.resource.text_selection.TextSelector;
+import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextTranslationActionListener;
 import com.bignerdranch.android.testpdfreader.model.resource_loader.OnPageLoadedListener;
 import com.bignerdranch.android.testpdfreader.view.PdfMobilePageFragmentViewModel;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourceViewModel;
@@ -33,7 +32,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 
     private static String ARG_URI = "com.bignerdranch.android.testpdfreader.ui.resource.view_fragment.mobile_view.uri";
     private static String ARG_PAGE_NUM = "com.bignerdranch.android.testpdfreader.ui.resource.view_fragment.mobile_view.page_num";
-    private ITextSelectionListener mITextSelectionListener;
+    private TextTranslationActionListener mITextSelectionListener;
 
     private FragmentMobilePageBinding mBinding;
     private PageAdapter mPageAdapter;
@@ -81,7 +80,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         mBinding.fragmentPdfMobilePageRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getActivity()));
 
-        mPageAdapter = new PageAdapter(new TextSelectionManager(mITextSelectionListener));
+        mPageAdapter = new PageAdapter(mITextSelectionListener);
         mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mPageAdapter);
 
         mResourceViewModel = ViewModelProviders.of(this).get(ResourceViewModel.class);
@@ -102,7 +101,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
             mPageAdapter.setItemList(list);
             closeAnimation();
 
-            startCurrentContentChangedListen(list);
+            startMarkerChangedListen(list);
 //        if(mCurrentItem!= -1){
 //            PageItemWrapper wrapper = mContent.get(mCurrentItem);
 //            if(wrapper!= null) wrapper.setCurrent(true);
@@ -119,7 +118,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
         mBinding.getViewModel().setAnimationVisibility(false);
     }
 
-    private void startCurrentContentChangedListen(List<PageItemWrapper> list){
+    private void startMarkerChangedListen(List<PageItemWrapper> list){
         mResourceViewModel.getMetaDate().observe(this, metaData -> {
             if(metaData != null ) {
                 boolean needUpdate = false;
@@ -195,7 +194,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
     //------------------------------------------------------------------------
 
 //    private class PageFragmentHolder extends RecyclerView.ViewHolder implements
-//            OnParagraphTranslatedListener {
+//            TranslationListener {
 //
 //        private FragmentPdfMobilePageListItemBinding mBinding;
 //        private MarkerFragmentResourceItemImpl mMarker;
@@ -204,12 +203,12 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //            super(binding.getRoot());
 //            mBinding = binding;
 //            mBinding.fragmentPdfMobilePageListItemContentText
-//                    .setOnClickListener(new OnWordClickedListener(new TextSelectorImpl()));
+//                    .setOnClickListener(new OnClickedWordSelector(new TextSelectorImpl()));
 //            mBinding.fragmentPdfMobilePageListItemContentText
 //                    .setOnTouchListener(new OnClickWithoutFocusFixer());
 //
 //            mBinding.fragmentPdfMobilePageListItemContentText
-//                    .setOnSelectionChangListener(new OnSelectionChangListenerImpl());
+//                    .setOnSelectionChangListener(new OnParagraphSelectionChangedListener());
 //
 //            mBinding.fragmentPdfMobilePageListItemTranslateParagraphBtn.setOnClickListener(
 //                    new OnTranslateBtnClickListener()
@@ -234,7 +233,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //        }
 //
 //        @Override
-//        public void onParagraphTranslated(String paragraph) {
+//        public void onTranslated(String paragraph) {
 //            mBinding.getViewModel().showTranslation(paragraph);
 //        }
 //
@@ -245,7 +244,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //                            + "\n" + error.toString());
 //        }
 //
-//        private class OnSelectionChangListenerImpl
+//        private class OnParagraphSelectionChangedListener
 //                implements SelectionAdaptedTextView.OnSelectionChangListener {
 //            @Override
 //            public void onSelectionChanged(int selStart, int selEnd) {
@@ -275,11 +274,11 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
 //            }
 //        }
 //
-//        private class OnWordClickedListener implements View.OnClickListener {
+//        private class OnClickedWordSelector implements View.OnClickListener {
 //
 //            private TextSelectorImpl mSelector;
 //
-//            public OnWordClickedListener(TextSelectorImpl selector) {
+//            public OnClickedWordSelector(TextSelectorImpl selector) {
 //                mSelector = selector;
 //            }
 //
@@ -385,7 +384,7 @@ public class PageFragment extends Fragment implements OnPageLoadedListener {
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
-        mITextSelectionListener = (ITextSelectionListener) context;
+        mITextSelectionListener = (TextTranslationActionListener) context;
     }
 
     @Override
