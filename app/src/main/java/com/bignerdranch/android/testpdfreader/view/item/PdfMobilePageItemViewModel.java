@@ -3,7 +3,7 @@ package com.bignerdranch.android.testpdfreader.view.item;
 import android.view.View;
 
 import com.bignerdranch.android.testpdfreader.model.translator.TranslationListener;
-import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageItemWrapper;
+import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.service.impl.PageParagraphWrapper;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -12,10 +12,10 @@ import androidx.databinding.Bindable;
 public class PdfMobilePageItemViewModel extends BaseObservable implements
         TranslationListener {
     private static final String TAG = "ContentItemViewModel";
-    private PageItemWrapper mContent;
+    private PageParagraphWrapper mContent;
     private IState mState;
 
-    public void setContent(PageItemWrapper content) {
+    public void setContent(PageParagraphWrapper content) {
         mContent = content;
         setState(new DefaultState());
     }

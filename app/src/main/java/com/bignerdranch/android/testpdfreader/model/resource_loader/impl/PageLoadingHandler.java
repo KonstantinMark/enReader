@@ -60,8 +60,7 @@ public abstract class PageLoadingHandler<T extends OnPageLoadedListener> extends
             public void handleMessage(Message msg) {
                 if (msg.what == MESSAGE_LOAD) {
                     T target = (T) msg.obj;
-                    if(target.dataStillNeeded())
-                        handleRequest(target, getRequest(target));
+                    handleRequest(target, getRequest(target));
                     mRequestMap.remove(target);
                 }
             }

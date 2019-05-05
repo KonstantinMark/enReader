@@ -9,7 +9,7 @@
             type="com.bignerdranch.android.testpdfreader.db.entry.Resource" />
 
         <variable name="callback"
-            type="com.bignerdranch.android.testpdfreader.ui.resources_list.ResourceClickCallback"/>
+            type="com.bignerdranch.android.testpdfreader.controller.resources_list.ResourceClickCallback"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView

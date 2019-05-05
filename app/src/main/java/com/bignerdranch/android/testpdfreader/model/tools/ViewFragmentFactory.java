@@ -2,8 +2,8 @@ package com.bignerdranch.android.testpdfreader.model.tools;
 
 import android.net.Uri;
 
-import com.bignerdranch.android.testpdfreader.ui.resource.ResourceViewFragment;
-import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.MobileViewFragment;
+import com.bignerdranch.android.testpdfreader.controller.resource.ResourceViewFragment;
+import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.MobileViewFragment;
 
 public class ViewFragmentFactory {
 

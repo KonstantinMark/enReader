@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface OnPageLoadedListener {
 
-    void onLoaded(List<String> content);
-
-    boolean dataStillNeeded();
+    void onPageLoaded(List<String> content);
 
 }

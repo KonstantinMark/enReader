@@ -836,7 +836,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
 			/* My Note
              getIntrinsicWidth() returns the width of the drawable after it has been
              scaled to the current device's density
-             e.g. if the drawable is a 15 x 20 image and we load the image on a Nexus 4 (which
+             e.g. if the drawable is a 15 x 20 image and we loadResource the image on a Nexus 4 (which
              has a density of 2.0), getIntrinsicWidth() shall return 15 * 2 = 30
 			 */
 			mHeight = mDrawable.getIntrinsicHeight();

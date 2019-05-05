@@ -1,12 +1,13 @@
 package com.bignerdranch.android.testpdfreader.model;
 
 import com.bignerdranch.android.testpdfreader.model.translator.TranslationListener;
-import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.service.TextSelector;
+import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.page.service.TextSelector;
 
 public class TextTranslationAction {
     public enum ActionType{
         ACTION_WORD_SELECTED, ACTION_PARAGRAPH_SELECTED,
-        ACTION_PART_PARAGRAPH_SELECTED, ACTION_UN_SELECT
+        ACTION_PART_PARAGRAPH_SELECTED, ACTION_UN_SELECT,
+        ACTION_CURRENT_PAGE_CHANGED
     }
 
     private String mText;

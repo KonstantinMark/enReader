@@ -1,7 +1,7 @@
 package com.bignerdranch.android.testpdfreader.model.tools.marker;
 
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageItemBinding;
-import com.bignerdranch.android.testpdfreader.ui.resource.resource_view.page.PageItemWrapper;
+import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.service.impl.PageParagraphWrapper;
 
 public class MarkerFragmentResourceItemImpl implements Marker {
 
@@ -9,11 +9,11 @@ public class MarkerFragmentResourceItemImpl implements Marker {
     private FragmentMobilePageItemBinding mBinding;
     private int mPosition;
     private int mCurrentPage;
-    private PageItemWrapper mContent;
+    private PageParagraphWrapper mContent;
 
     public MarkerFragmentResourceItemImpl(
             FragmentMobilePageItemBinding binding,
-            int currentPage, int position, PageItemWrapper content) {
+            int currentPage, int position, PageParagraphWrapper content) {
         mBinding = binding;
         mPosition = position;
         mCurrentPage = currentPage;
