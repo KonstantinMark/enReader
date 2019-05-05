@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
@@ -60,6 +61,8 @@ public class MobileViewFragment extends ResourceViewFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mobile_page_list, container, false);
         mBinding.setViewModel(new FragmentPdfMobileViewViewModal());
 
@@ -77,6 +80,17 @@ public class MobileViewFragment extends ResourceViewFragment {
         return mBinding.getRoot();
     }
 
+
+    private boolean lastPageLoaded = false;
+    private void loadLastPage(){
+        mResourceDBViewModel.getMetaDate().observe(this, metaData -> {
+            if(metaData!=null && !lastPageLoaded) {
+                mResourceDBViewModel.getMetaDate().removeObservers(this);
+                mBinding.fragmentPdfMobileViewViewPager.setCurrentItem(metaData.currentPage);
+                lastPageLoaded = true;
+            }
+        });
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -96,16 +110,7 @@ public class MobileViewFragment extends ResourceViewFragment {
                 });
     }
 
-    private boolean lastPageLoaded = false;
-    private void loadLastPage(){
-        mResourceDBViewModel.getMetaDate().observe(this, metaData -> {
-            if(metaData!=null) {
-                mBinding.fragmentPdfMobileViewViewPager.setCurrentItem(metaData.currentPage);
-                lastPageLoaded = true;
-                mResourceDBViewModel.getMetaDate().removeObservers(this);
-            }
-        });
-    }
+
 
     private void startStorageResourceLoading(){
         Handler handler = new Handler();

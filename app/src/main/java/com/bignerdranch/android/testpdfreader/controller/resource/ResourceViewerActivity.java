@@ -5,19 +5,25 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.controller.resource.service.TextTranslationActionListener;
+import com.bignerdranch.android.testpdfreader.db.AppDatabase;
+import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 import com.bignerdranch.android.testpdfreader.model.tools.OnTranslationRemovedListenerAdapter;
 import com.bignerdranch.android.testpdfreader.controller.AbstractActivityWithPermissions;
 import com.bignerdranch.android.testpdfreader.model.TextTranslationAction;
 import com.bignerdranch.android.testpdfreader.model.tools.ViewFragmentFactory;
+import com.bignerdranch.android.testpdfreader.viewmodal.ResourceDBViewModel;
 import com.bignerdranch.android.testpdfreader.viewmodal.TranslationManagerViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class ResourceViewerActivity extends AbstractActivityWithPermissions
@@ -55,10 +61,12 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("MY_TAG", "onCreate");
         setContentView(R.layout.activity_book_viewer);
 
         mResourceUri = Uri.parse(getIntent().getStringExtra(EXTRA_RESOURCE_URI));
+
+//        Toolbar myToolbar = findViewById(R.id.activity_book__toolbar);
+//        setSupportActionBar(myToolbar);
 
         mTranslationManagerViewModel = ViewModelProviders.of(this)
                 .get(TranslationManagerViewModel.class);
@@ -68,6 +76,18 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
         if (!containsResourceViewFragment(fm)) {
             setResourceViewFragment(fm);
         }
+    }
+
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+//        AppDatabase.getDatabase(this).resourceDao().loadResource(mResourceUri).observe(this,
+//                (resource -> {
+//                    if(resource!=null)
+//                        getSupportActionBar().setTitle(resource.name);
+//                }));
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -98,6 +118,16 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
                 removeFragmentTranslation();
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean containsResourceViewFragment(FragmentManager fm) {

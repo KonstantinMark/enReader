@@ -56,5 +56,4 @@ public class ResourceDBViewModel extends AndroidViewModel {
     public void updateCurrentItem(int item){
         db.metaDataDao().update(current, item);
     }
-
 }

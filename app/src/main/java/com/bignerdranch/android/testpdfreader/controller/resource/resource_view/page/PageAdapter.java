@@ -8,6 +8,7 @@ import com.bignerdranch.android.testpdfreader.R;
 import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.service.impl.PageParagraphWrapper;
 import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.page.service.impl.TextSelectorImpl;
 import com.bignerdranch.android.testpdfreader.databinding.FragmentMobilePageItemBinding;
+import com.bignerdranch.android.testpdfreader.db.entry.MetaData;
 import com.bignerdranch.android.testpdfreader.model.tools.OnClickWithoutFocusFixer;
 import com.bignerdranch.android.testpdfreader.controller.resource.service.TextTranslationActionListener;
 import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.page.service.impl.OnClickedWordSelector;
@@ -16,22 +17,28 @@ import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.
 import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.page.service.impl.OnTranslateBtnClickListener;
 import com.bignerdranch.android.testpdfreader.controller.resource.resource_view.page.service.impl.OnClickWordListenerImpl;
 import com.bignerdranch.android.testpdfreader.view.item.PdfMobilePageItemViewModel;
+import com.bignerdranch.android.testpdfreader.viewmodal.ResourceDBViewModel;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageHolder> {
 
     private List<? extends PageParagraphWrapper> mItemList;
+
     private TextTranslationActionListener mTextTranslationActionListener;
+    private int page;
 
     public PageAdapter(TextTranslationActionListener textTranslationActionListener) {
         mTextTranslationActionListener = textTranslationActionListener;
+
     }
 
     public void setItemList(List<? extends PageParagraphWrapper> itemList) {

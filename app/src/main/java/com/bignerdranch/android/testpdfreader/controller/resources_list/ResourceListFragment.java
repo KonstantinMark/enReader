@@ -15,6 +15,7 @@ import com.bignerdranch.android.testpdfreader.controller.resource.ResourceViewer
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourcesListViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,6 +37,8 @@ public class ResourceListFragment extends Fragment {
 
     private ResourceAdapter mAdapter;
 
+    private AppDatabase db;
+
     public static ResourceListFragment newInstance(){
         return new ResourceListFragment();
     }
@@ -47,6 +50,8 @@ public class ResourceListFragment extends Fragment {
         mBinding.itemsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         mAdapter = new ResourceAdapter(mCallback);
         mBinding.itemsRecyclerView.setAdapter(mAdapter);
+
+        db = AppDatabase.getDatabase(getContext());
 
         return mBinding.getRoot();
     }
@@ -93,46 +98,10 @@ public class ResourceListFragment extends Fragment {
 
     private ResourceClickCallback mCallback = resource -> {
         Intent intent = ResourceViewerActivity.newIntent(getContext(), resource.uri);
+        // set last date access
+        AsyncTask.execute(()->{
+            db.metaDataDao().updateTime(resource.uri, new Timestamp(new java.util.Date().getTime()));
+        });
         startActivity(intent);
     };
-
-
-    //    private void updateUI(){
-//        setAnimationVisibility(true);
-//        Runnable runnable = () -> {
-//            Runnable runnable1 = () -> {
-//                updateResourcesList();
-//                setAnimationVisibility(false);
-//            };
-//            new Handler(Looper.getMainLooper()).postDelayed(runnable1, 0);
-//        };
-//        AsyncTask.execute(runnable);
-//    }
-//
-//    private void setAnimationVisibility(boolean visibility) {
-//        binding.getViewModel().setIsLoading(visibility);
-//    }
-//
-//    private void updateResourcesList() {
-//        AppDatabase db = AppDatabase.getDatabase(getContext());
-//        LiveData<List<Resource>> liveResources = db.resourceDao().loadAllResources();
-//
-//        liveResources.observe(this, resources -> {
-//            if (mAdapter == null) {
-//                mAdapter = new ResourceAdapter(resources, getContext());
-//                binding.itemsRecyclerView.setAdapter(mAdapter);
-//            } else {
-//                List<Resource> current = mAdapter.getResources();
-//                for (Resource r: resources){
-//                    if(!current.contains(r))
-//                        mAdapter.addItem(r, resources.indexOf(r));
-//                }
-//                for(int i = 0; i < current.size(); i++){
-//                    if(!resources.contains(current.get(i))){
-//                        mAdapter.removeItem(i);
-//                    }
-//                }
-//            }
-//        });
-//    }
 }

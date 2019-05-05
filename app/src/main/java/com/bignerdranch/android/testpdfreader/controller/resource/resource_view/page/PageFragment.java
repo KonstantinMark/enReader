@@ -64,11 +64,13 @@ public class PageFragment extends Fragment
         mBinding.fragmentPdfMobilePageRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getActivity()));
 
+        ResourceDBViewModel resourceDBViewModel = ViewModelProviders.of(this).get(ResourceDBViewModel.class);
+        resourceDBViewModel.loadResource(resourceUri);
+
+
         mPageAdapter = new PageAdapter(mITextSelectionListener);
         mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mPageAdapter);
 
-        ResourceDBViewModel resourceDBViewModel = ViewModelProviders.of(this).get(ResourceDBViewModel.class);
-        resourceDBViewModel.loadResource(resourceUri);
 
         ResourceStorageLoaderViewModel storageLoaderViewModel = ViewModelProviders.of(this).get(ResourceStorageLoaderViewModel.class);
         storageLoaderViewModel.getResourceLoader().observe(this, resourceLoader -> {

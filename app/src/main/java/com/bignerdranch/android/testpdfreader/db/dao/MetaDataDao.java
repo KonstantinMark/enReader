@@ -1,10 +1,14 @@
 package com.bignerdranch.android.testpdfreader.db.dao;
 
 import android.net.Uri;
+import android.util.Log;
 
+import com.bignerdranch.android.testpdfreader.db.converter.DateConverter;
 import com.bignerdranch.android.testpdfreader.db.converter.UriConverter;
 import com.bignerdranch.android.testpdfreader.db.entry.MetaData;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -17,7 +21,7 @@ import androidx.room.TypeConverters;
 import androidx.room.Update;
 
 @Dao
-@TypeConverters(UriConverter.class)
+@TypeConverters({DateConverter.class, UriConverter.class})
 public interface MetaDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MetaData data);
@@ -25,6 +29,8 @@ public interface MetaDataDao {
     @Update
     void update(MetaData data);
 
+    @Query("UPDATE metaData SET lastOpenedTime = :time where uri = :uri")
+    void updateTime(Uri uri, Timestamp time);
 
     @Query("UPDATE metaData SET currentItem = :currentItem where uri = :uri")
     void update(Uri uri, int currentItem);

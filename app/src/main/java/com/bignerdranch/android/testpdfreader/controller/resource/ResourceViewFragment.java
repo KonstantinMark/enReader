@@ -21,10 +21,6 @@ public abstract class ResourceViewFragment extends Fragment {
         return fragment;
     }
 
-    public void resetView() {
-        // DEFAULT ACTION - IGNORE
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(ARG_URL, mResourceUri.toString());

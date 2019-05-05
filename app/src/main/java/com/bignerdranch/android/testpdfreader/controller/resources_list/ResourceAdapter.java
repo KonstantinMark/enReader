@@ -23,8 +23,8 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
     private List<? extends Resource> mResourceList;
     private ResourceClickCallback mRsourceCallback;
 
-    public ResourceAdapter(ResourceClickCallback rsourceCallback) {
-        mRsourceCallback = rsourceCallback;
+    public ResourceAdapter(ResourceClickCallback resourceCallback) {
+        mRsourceCallback = resourceCallback;
     }
 
     public void setResourceList(final List<? extends Resource> resourceList) {
@@ -92,117 +92,15 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
     }
 
 
-//    private ResourceHolder mCurrentInDeleteMod;
-//    private Context mContext;
-
-//    public ResourceAdapter() {
-//        mResourceList = resourceList;
-//        mContext = context;
-//        binding.itemsRecyclerView.setOnTouchListener(new ResourceOnTouchListener());
-//    }
-
-//    @NonNull
-//    @Override
-//    public ResourceHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-//        ListItemBookBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.list_item_book,
-//        viewGroup, false);
-//        return new ResourceHolder(binding);
-//    }
-//
-//    private class ResourceOnTouchListener implements View.OnTouchListener{
-//
-//        @SuppressLint("ClickableViewAccessibility")
-//        @Override
-//        public boolean onTouch(View v, MotionEvent event) {
-//            if (event.getAction() == MotionEvent.ACTION_DOWN)
-//                v.setOnTouchListener((v2, event2) -> {
-//                    if (event.getAction() == MotionEvent.ACTION_UP) {
-//                        changCurrentInDeleteMod(null);
-//                    }
-//                    return false;
-//                });
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull ResourceHolder resourceHolder, int i) {
-//        resourceHolder.bind(mResourceList.get(i));
-////        binding.itemsRecyclerView.setOnClickListener(v -> changCurrentInDeleteMod(null));
-//    }
-//
-//    public void removeItem(int position) {
-//        changCurrentInDeleteMod(null);
-//        mResourceList.remove(position);
-//        notifyItemRemoved(position);
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return mResourceList.size();
-//    }
-//
-//    public void setResourceList(List<Resource> resources){
-//        mResourceList = resources;
-//    }
-//
-//    public void addItem(Resource resource, int position) {
-//        changCurrentInDeleteMod(null);
-//        mResourceList.add(position, resource);
-//        notifyItemInserted(position);
-//    }
-//
-//    public void changCurrentInDeleteMod(ResourceHolder holder) {
-//        if (mCurrentInDeleteMod != null && mCurrentInDeleteMod != holder)
-//            mCurrentInDeleteMod.mBookItemTouchListener.setDefault();
-//        mCurrentInDeleteMod = holder;
-//    }
-//
-//    public void forgetMe(ResourceHolder holder) {
-//        if (mCurrentInDeleteMod == holder) mCurrentInDeleteMod = null;
-//    }
-//
-//    public List<Resource> getResources(){
-//        return mResourceList;
-//    }
-//
-
-    // --------------------------------------------------------------------------------------------------
     class ResourceHolder extends RecyclerView.ViewHolder {
 
         final ListItemBookBinding binding;
-
-//        Resource mResource;
-//        BookItemTouchListener mBookItemTouchListener;
 
 
         public ResourceHolder(ListItemBookBinding binding){
             super(binding.getRoot());
             this.binding = binding;
-            //        mBookItemTouchListener = new BookItemTouchListener(this, ResourceListFragment.this.mAdapter, getContext());
-//            setListeners();
         }
-//
-//        public void setListeners() {
-//            binding.listItemBookForeground.setOnFocusChangeListener((v, hasFocus) -> {
-//                Log.i(TAG, mResource.name + " focus: " + hasFocus);
-//            });
-//            binding.listItemBookForeground.setOnTouchListener(mBookItemTouchListener);
-//            binding.listItemBookForeground.setOnClickListener(new OnResourceClickListener(
-//                    mContext, mResource));
-    //        binding.listItemBookBackground.setOnClickListener(new OnResourceDeleteListener(
-    //                mContext, mAdapter, getAdapterPosition(), mResource, getView()));
-//        }
-//
-//        public void bind(Resource resource){
-//            ResourceItemViewModel model = new ResourceItemViewModel(mContext);
-//            model.setResource(resource);
-//            binding.setViewModel(model);
-//            mResource = resource;
-////            mBookItemTouchListener.refresh();
-//        }
-
     }
 
 }

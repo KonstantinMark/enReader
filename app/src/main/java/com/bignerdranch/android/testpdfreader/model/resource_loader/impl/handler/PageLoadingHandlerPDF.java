@@ -23,7 +23,6 @@ public class PageLoadingHandlerPDF<T extends OnPageLoadedListener> extends PageL
 
     public PageLoadingHandlerPDF(Handler handler, OnLoadedListener<T> listener, Context context, Uri uri) throws IOException {
         super(handler, listener);
-        Log.i("MY_TAG", "PageLoadingHandlerPDF");
         mContext = context;
         PdfReaderCreator pdfReaderCreator = new PdfReaderCreator(mContext, uri);
         mReader = pdfReaderCreator.getPdfReader();

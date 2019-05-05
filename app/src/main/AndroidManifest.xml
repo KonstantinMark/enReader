@@ -12,21 +12,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         android:fullBackupContent="true"
-        android:hardwareAccelerated="false"
         android:largeHeap="true"
-        android:allowBackup="true">
+        android:allowBackup="true"
+        android:theme="@style/AppTheme">
         <activity android:name=".controller.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".controller.resource.ResourceViewerActivity" />
+        <activity android:name=".controller.resource.ResourceViewerActivity"
+            android:parentActivityName=".trash.selectableView.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>
