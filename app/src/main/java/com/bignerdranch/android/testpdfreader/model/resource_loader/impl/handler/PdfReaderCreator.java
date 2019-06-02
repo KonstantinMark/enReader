@@ -1,4 +1,4 @@
-package com.bignerdranch.android.testpdfreader.model.resource_loader.impl;
+package com.bignerdranch.android.testpdfreader.model.resource_loader.impl.handler;
 
 import android.content.Context;
 import android.net.Uri;

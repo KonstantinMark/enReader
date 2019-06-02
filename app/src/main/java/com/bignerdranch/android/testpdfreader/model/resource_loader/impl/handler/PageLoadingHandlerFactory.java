@@ -26,6 +26,10 @@ public class PageLoadingHandlerFactory {
             switch (resource.getType()) {
                 case PDF:
                     return new PageLoadingHandlerPDF<T>(handler, listener, mContext, uri);
+                case TXT:
+                    return new PageLoadingHandlerTXT<>(handler, listener, mContext, uri);
+                case DOCX:
+                    return new PageLoadingHandlerWord<>(handler, listener, mContext, uri);
                 default:
                     return null;
             }

@@ -19,6 +19,7 @@ import com.bignerdranch.android.testpdfreader.viewmodal.ResourceStorageLoaderVie
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +48,13 @@ public class PageFragment extends Fragment
         arg.putInt(ARG_PAGE_NUM, pageNum);
         PageFragment fragment = new PageFragment();
         fragment.setArguments(arg);
+
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -67,17 +74,19 @@ public class PageFragment extends Fragment
         ResourceDBViewModel resourceDBViewModel = ViewModelProviders.of(this).get(ResourceDBViewModel.class);
         resourceDBViewModel.loadResource(resourceUri);
 
+        ResourceStorageLoaderViewModel storageLoaderViewModel = ViewModelProviders.of(this).get(ResourceStorageLoaderViewModel.class);
+
+        AtomicBoolean loaded = new AtomicBoolean(false);
+        storageLoaderViewModel.getResourceLoader().observe(this, resourceLoader -> {
+            if(resourceLoader!= null && !loaded.get()){
+                loaded.set(true);
+                resourceLoader.loadPage(pageNum, this);
+
+            }
+        });
 
         mPageAdapter = new PageAdapter(mITextSelectionListener);
         mBinding.fragmentPdfMobilePageRecyclerView.setAdapter(mPageAdapter);
-
-
-        ResourceStorageLoaderViewModel storageLoaderViewModel = ViewModelProviders.of(this).get(ResourceStorageLoaderViewModel.class);
-        storageLoaderViewModel.getResourceLoader().observe(this, resourceLoader -> {
-            if(resourceLoader!= null){
-                resourceLoader.loadPage(pageNum, this);
-            }
-        });
 
         return mBinding.getRoot();
     }

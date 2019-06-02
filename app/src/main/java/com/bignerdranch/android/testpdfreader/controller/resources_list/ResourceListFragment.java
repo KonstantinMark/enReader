@@ -3,6 +3,7 @@ package com.bignerdranch.android.testpdfreader.controller.resources_list;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,15 @@ import com.bignerdranch.android.testpdfreader.databinding.FragmentMainBinding;
 import com.bignerdranch.android.testpdfreader.db.AppDatabase;
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
 import com.bignerdranch.android.testpdfreader.controller.resource.ResourceViewerActivity;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.img_loader.ResourceImgFactory;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.img_loader.ResourceImgService;
 import com.bignerdranch.android.testpdfreader.viewmodal.ResourcesListViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Observer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,12 +92,15 @@ public class ResourceListFragment extends Fragment {
     private void subscribeUi(LiveData<List<Resource>> liveData){
         liveData.observe(this, resources -> {
             if(resources != null){
+
+                ResourceImgService.loadImages(resources, getContext());
+
                 mAdapter.setResourceList(resources);
                 mBinding.setIsLoading(false);
             } else {
                 mBinding.setIsLoading(true);
             }
-        });
+        }); 
     }
 
     private ResourceClickCallback mCallback = resource -> {
@@ -102,6 +109,7 @@ public class ResourceListFragment extends Fragment {
         AsyncTask.execute(()->{
             db.metaDataDao().updateTime(resource.uri, new Timestamp(new java.util.Date().getTime()));
         });
+
         startActivity(intent);
     };
 }

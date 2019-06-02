@@ -3,11 +3,9 @@ package com.bignerdranch.android.testpdfreader.model.resource_loader.impl.handle
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 
 import com.bignerdranch.android.testpdfreader.model.resource_loader.OnPageLoadedListener;
 import com.bignerdranch.android.testpdfreader.model.resource_loader.impl.PageLoadingHandler;
-import com.bignerdranch.android.testpdfreader.model.resource_loader.impl.PdfReaderCreator;
 import com.bignerdranch.android.testpdfreader.model.text.TextManager;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;

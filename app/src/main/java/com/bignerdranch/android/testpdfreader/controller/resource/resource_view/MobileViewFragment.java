@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -61,7 +62,6 @@ public class MobileViewFragment extends ResourceViewFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
 
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mobile_page_list, container, false);
         mBinding.setViewModel(new FragmentPdfMobileViewViewModal());
@@ -128,6 +128,7 @@ public class MobileViewFragment extends ResourceViewFragment {
         mStorageLoaderViewModel.getResourceLoader().observe(this, resourceLoader -> {
             if(resourceLoader!= null){
                 mFragmentStatePagerAdapter.setPageCount(resourceLoader.getPagesCount());
+//                mFragmentStatePagerAdapter.setLoader(resourceLoader);
                 loadLastPage();
                 mBinding.getViewModel().setFullPageCount(resourceLoader.getPagesCount());
             }

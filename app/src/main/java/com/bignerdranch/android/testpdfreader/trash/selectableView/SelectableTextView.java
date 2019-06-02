@@ -431,7 +431,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
 		// cursor to the next line. (As Layout.getOffsetForHorizontal does not return the
 		// offset of the last character of the specified line)
 		//
-		// But this function will probably getResourceImg called again immediately, must decrement the offset
+		// But this function will probably getResourceImgLoader called again immediately, must decrement the offset
 		// by 1 to compensate for the change made below. (see previous HACK BLOCK)
 		/////////////////////HACK BLOCK///////////////////////////////////////////////////
 		if (offset < getText().length() - 1) {
@@ -471,7 +471,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
 	////////////////////////////////////////////////
     
 	/**
-	 * getResourceImg the offset given the line and the raw x
+	 * getResourceImgLoader the offset given the line and the raw x
 	 *
 	 * @param line the line
 	 * @param x    raw x
@@ -488,7 +488,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
 	}
 
 	/**
-	 * getResourceImg the (x,y) screen coordinates from the specified offset.
+	 * getResourceImgLoader the (x,y) screen coordinates from the specified offset.
 	 *
 	 * @param offset   the offset
 	 * @param scroll_x the horizontal scroll distance to take away
@@ -806,7 +806,7 @@ public class SelectableTextView extends androidx.appcompat.widget.AppCompatTextV
         
         
 		/**
-		 * Adjustment to insert to the Raw x, y coordinate of the touch position to getResourceImg the location of where
+		 * Adjustment to insert to the Raw x, y coordinate of the touch position to getResourceImgLoader the location of where
 		 * the cursor is pointing to
 		 */
 		private int mAdjustX;

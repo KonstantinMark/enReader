@@ -1,5 +1,7 @@
 package com.bignerdranch.android.testpdfreader.controller.resources_list;
 
+import android.graphics.drawable.DrawableWrapper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -84,6 +86,7 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
         holder.binding.setResource(mResourceList.get(position));
         holder.binding.executePendingBindings();
 
+        holder.binding.imageView.setImageDrawable(holder.binding.getResource().drawable);
     }
 
     @Override
@@ -91,11 +94,9 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.Resour
         return mResourceList == null ? 0 : mResourceList.size();
     }
 
-
     class ResourceHolder extends RecyclerView.ViewHolder {
 
         final ListItemBookBinding binding;
-
 
         public ResourceHolder(ListItemBookBinding binding){
             super(binding.getRoot());

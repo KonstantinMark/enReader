@@ -65,9 +65,6 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
 
         mResourceUri = Uri.parse(getIntent().getStringExtra(EXTRA_RESOURCE_URI));
 
-//        Toolbar myToolbar = findViewById(R.id.activity_book__toolbar);
-//        setSupportActionBar(myToolbar);
-
         mTranslationManagerViewModel = ViewModelProviders.of(this)
                 .get(TranslationManagerViewModel.class);
 
@@ -76,18 +73,6 @@ public class ResourceViewerActivity extends AbstractActivityWithPermissions
         if (!containsResourceViewFragment(fm)) {
             setResourceViewFragment(fm);
         }
-    }
-
-    @Override
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        super.setSupportActionBar(toolbar);
-//        AppDatabase.getDatabase(this).resourceDao().loadResource(mResourceUri).observe(this,
-//                (resource -> {
-//                    if(resource!=null)
-//                        getSupportActionBar().setTitle(resource.name);
-//                }));
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.bignerdranch.android.testpdfreader.db.entry.MetaData;
 import com.bignerdranch.android.testpdfreader.model.storage.FilePermissionManager;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.MetaDataManager;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.ResourceBuilder;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceType;
 import com.bignerdranch.android.testpdfreader.model.tools.MessageShower;
 import com.bignerdranch.android.testpdfreader.controller.resources_list.ResourceListFragment;
 import com.bignerdranch.android.testpdfreader.databinding.ActivityMainBinding;
@@ -28,6 +29,7 @@ import androidx.fragment.app.FragmentManager;
 public class MainActivity extends AppCompatActivity {
     public static final String FILE_TYPE_PDF = "application/pdf";
     public static final String FILE_TYPE_TEXT = "text/plain";
+    public static final String FILE_ANY_TYPE = "*/*";
 
     private static String TAG = "MainActivity";
 
@@ -54,20 +56,27 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Runnable runnable = () -> {
                 Uri uri = resultData.getData();
+                FilePermissionManager.grantPermissions(uri, getApplicationContext());
+
                 AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
 
-                FilePermissionManager.grantPermissions(uri, getApplicationContext());
+
                 Resource newResource = ResourceBuilder.buildNew(uri, getApplicationContext());
-                try {
-                    db.resourceDao().insert(newResource);
-                    MetaData metaData = new MetaData();
-                    metaData.uri = newResource.uri;
-                    MetaDataManager.setLastOpenedDateCurrent(metaData);
-                    db.metaDataDao().insert(metaData);
-                } catch (SQLiteConstraintException exception){
-                    MessageShower.show(mBinding.getRoot(), R.string.book_already_added,
+                if(newResource.type == ResourceType.UNDEFINE){
+                    MessageShower.show(mBinding.getRoot(), R.string.book_format_not_supported,
+                            MessageShower.DEFAULT);
+                } else {
+                    try {
+                        db.resourceDao().insert(newResource);
+                        MetaData metaData = new MetaData();
+                        metaData.uri = newResource.uri;
+                        MetaDataManager.setLastOpenedDateCurrent(metaData);
+                        db.metaDataDao().insert(metaData);
+                    } catch (SQLiteConstraintException exception) {
+                        MessageShower.show(mBinding.getRoot(), R.string.book_already_added,
                                 MessageShower.DEFAULT);
-                    exception.printStackTrace();
+                        exception.printStackTrace();
+                    }
                 }
 
             };
@@ -89,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setAddResourceBtnListener(View v){
         v.setOnClickListener(v1 -> {
-            Intent i = createOnReadIntent(FILE_TYPE_PDF);
+            Intent i = createOnReadIntent(FILE_ANY_TYPE);
             startActivityForResult(i, READ_REQUEST_CODE);
         });
     }

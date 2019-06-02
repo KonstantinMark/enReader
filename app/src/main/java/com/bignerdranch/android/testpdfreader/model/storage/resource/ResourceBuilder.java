@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.bignerdranch.android.testpdfreader.db.entry.Resource;
+import com.bignerdranch.android.testpdfreader.model.storage.resource.img_loader.ResourceImgFactory;
 import com.bignerdranch.android.testpdfreader.model.storage.resource.tool.ResourceInformation;
 
 public class ResourceBuilder {
@@ -16,7 +17,7 @@ public class ResourceBuilder {
         resource.name = mResourceInformation.getResourceName(uri);
         resource.type = mResourceInformation.identifyType(uri);
 
-//        new ResourceImgFactory(mContext).getResourceImg(resource.getType()).setImage(resource);
+        new ResourceImgFactory(context).getResourceImgLoader(resource.getType()).setImage(resource);
 
 //        resource.setMetaData(new MetaDataImpl());
 

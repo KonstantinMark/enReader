@@ -34,7 +34,8 @@ public class ResourceStorageLoaderViewModel extends AndroidViewModel {
 
         if(mResourceLoader.getValue() == null) {
             loader = new ResourceLoaderCachedWrapper(
-                    new ResourceLoaderImpl(uri, getApplication(), handler));
+                    new ResourceLoaderImpl(uri, getApplication(), handler)
+            );
         } else {
             loader = mResourceLoader.getValue();
             if(!loader.getResourceUri().equals(uri)){

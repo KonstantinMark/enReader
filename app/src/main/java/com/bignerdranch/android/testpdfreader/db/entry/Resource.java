@@ -1,5 +1,6 @@
 package com.bignerdranch.android.testpdfreader.db.entry;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -23,6 +25,9 @@ public class Resource {
     public Uri uri;
     public String name;
     public ResourceType type;
+
+    @Ignore
+    public Drawable drawable;
 
     @NonNull
     public Uri getUri() {

@@ -25,9 +25,7 @@ public class ResourcesListViewModel extends AndroidViewModel {
         db = AppDatabase.getDatabase(application);
 
         LiveData<List<Resource>> resources = db.resourceDao().loadAllResources();
-
         mObservableResources.addSource(resources, mObservableResources::setValue);
-
     }
 
     public LiveData<List<Resource>> getResources(){

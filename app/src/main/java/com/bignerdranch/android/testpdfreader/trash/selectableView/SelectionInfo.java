@@ -113,7 +113,7 @@ public class SelectionInfo {
     
     
 	/**
-	 * getResourceImg the starting offset of the selection. Note the the starting offset is
+	 * getResourceImgLoader the starting offset of the selection. Note the the starting offset is
 	 * not necessarily smaller than the ending offset
 	 * @return the starting offset of the selection
 	 */
@@ -131,7 +131,7 @@ public class SelectionInfo {
 	}
     
 	/**
-	 * getResourceImg the ending offset of the selection. Note the the ending offset is
+	 * getResourceImgLoader the ending offset of the selection. Note the the ending offset is
 	 * not necessarily larger than the starting offset
 	 * @return the ending offset of the selection
 	 */

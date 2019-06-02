@@ -12,11 +12,11 @@ public class TextManager {
         mText = text;
     }
 
-    static boolean isLowerCaseLetter(char c) {
+    private static boolean isLowerCaseLetter(char c) {
         return (c >= 'a' && c <= 'z');
     }
 
-    static boolean isLetter(char c) {
+    private static boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '’';
     }
 
